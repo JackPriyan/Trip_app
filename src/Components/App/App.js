@@ -3,6 +3,9 @@ import './App.css';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import FormPanel from '../DetailsForm/form'
+import FilterPanel from '../FilterMenu/filter'
+import ListPanel from '../TripList/grid_list'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,17 +28,17 @@ function App() {
       <Grid container spacing={3}>
         <Grid item xs={2}>
           <Paper className={classes.paper}>
-            Filter Panel
+            <FilterPanel/>
           </Paper>
         </Grid>
         <Grid item xs={5}>
           <Paper className={classes.paper}>
-            List
+            <ListPanel></ListPanel>
           </Paper>
         </Grid>
         <Grid item xs={5}>
           <Paper className={classes.paper}>
-            Details
+            <FormPanel/>
           </Paper>
         </Grid>
       </Grid>
