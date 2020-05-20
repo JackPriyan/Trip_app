@@ -12,6 +12,11 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { green, purple } from '@material-ui/core/colors';
 import AddAlertIcon from '@material-ui/icons/AddAlert';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import moment from 'moment'
+
 const theme = createMuiTheme({
     palette: {
       primary: green,
@@ -43,13 +48,29 @@ const styles = theme => ({
 
 class form extends Component {
 
-    constructor(){
+    constructor(props){
         super();
+        this.state = {};
+        const date = new Date();
+        const todayDate = moment(date).format("yyyy-MM-DD");
+        const startDate = moment(date).format("yyyy-MM-DD");   
+        this.state = {todayDate : todayDate, startDate: startDate};
+
+    }
+    componentDidMount() {
+        console.log('I was triggered during componentDidMount',this.state);
     }
 
     render(){
         const classes = this.props;
         const theme = this.props;
+
+        const handleChange = (name, event) => {
+            const target = event.target; // Do we need this?(unused in the function scope)!
+            console.log("New Date => ", event.target.value)
+              // Prints the new value.
+            
+            };
 
         return(
             <div>
@@ -82,10 +103,18 @@ class form extends Component {
                             <FormLabel >Category</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField id="outlined-basic" 
-                                        className={classes.formStyle}  
-                                        placeholder="Category" 
-                                        variant="outlined" />
+                        <FormControl variant="outlined" style={{width: '100%', alignItems:'left', alignContent:'left'}}>
+                            <Select
+                                    id="demo-simple-select-outlined"
+                                    value={0}
+                                    placeholder="Age">
+                            <MenuItem value={0}>
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={10}>Business</MenuItem>
+                            <MenuItem value={20}>Vacation</MenuItem>
+                            </Select>
+                            </FormControl>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -93,10 +122,14 @@ class form extends Component {
                         <FormLabel >Start Date</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField id="outlined-basic" 
+                            <TextField  style={{width: '100%'}}
+                                        id="outlined-basic" 
                                         className={classes.formStyle}  
-                                        placeholder="Start Date" 
-                                        variant="outlined" />
+                                        variant="outlined" 
+                                        type="date"
+                                        defaultValue={this.state.todayDate}
+                                        InputProps={{inputProps: { min: this.state.todayDate} }}
+                                        onChange={(event) => handleChange("plannedDep", event)}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -105,28 +138,43 @@ class form extends Component {
                         </Grid>
                         <Grid item xs={8}>
                             <TextField id="outlined-basic" 
+                                        style={{width: '100%'}}
                                         className={classes.formStyle}  
                                         placeholder="End Date" 
-                                        variant="outlined" />
+                                        variant="outlined" 
+                                        type="date"
+                                        defaultValue={this.state.startDate}
+                                        InputProps={{inputProps: { min: this.state.startDate} }}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
                         <Grid item xs={4}>
-                            <FormLabel >Task</FormLabel>
+                            <FormLabel >ToDo</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
                         </Grid>
                     </Grid>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                                <Button
+                    <Grid container spacing={3}>
+                        <Grid item xs={8}>
+                        <TextField id="outlined-basic" 
+                                        className={classes.formStyle}  
+                                        placeholder="ToDo Item" 
+                                        variant="outlined" />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button style={{height: '100%'}}
                                     size="small"
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
                                     startIcon={<AddIcon />}>
-                                    Add ToDo Item
+                                    Add 
                                 </Button>
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                               
                         </Grid>
                         <Grid item xs={6}>
                             <Button
@@ -137,6 +185,9 @@ class form extends Component {
                                 startIcon={<AddAlertIcon />}>
                                 Set Reminder
                             </Button>
+                        </Grid>
+                        <Grid item xs={3}>
+                              
                         </Grid>
                     </Grid>
                     <Grid container spacing={2}>
@@ -158,7 +209,7 @@ class form extends Component {
                             <Button
                                 size="small"
                                 variant="contained"
-                                color="secondary"
+                                color="default"
                                 className={classes.button}
                                 startIcon={<CancelIcon />}>
                                 Cancel
