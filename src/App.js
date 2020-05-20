@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  localStorage.setItem('myData', "Test Jak Data");
+
   return (
     <div className="App">
       <header className="App-header">
