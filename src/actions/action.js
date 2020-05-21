@@ -18,9 +18,9 @@ export const SearchText = text => ({ type: SEARCHTEXT, text});
 
 export const AddNewTrip = isNewTrip => ({ type: ADDNEWTRIP, isNewTrip});
 
-export const SaveTrip = tripDetail => ({ type: SAVETRIP, tripDetail});
+export const SaveTrip = tripList => ({ type: SAVETRIP, tripList});
 
-export const DeleteTrip = tripId => ({ type: DELETETRIP, tripId});
+export const DeleteTrip = (tripId,tripList) => ({ type: DELETETRIP, tripId, tripList});
 
 export const SaveTripCancel = () => ({ type: SAVETRIPCANCEL});
 

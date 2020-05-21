@@ -209,6 +209,8 @@ class form extends Component {
                     itemsDelete = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("itemsDelete => ", itemsDelete);
                     const newListDelete = itemsDelete && itemsDelete.length > 0? itemsDelete.filter((item)=>{ if(item.id !== this.state.id) return item }):[];
+                    this.props.onTripDelete(this.state.id, newListDelete);
+
                     this.setState({
                         ...this.state.initialState
                     });
@@ -239,6 +241,7 @@ class form extends Component {
                     this.setState({
                         ...this.state.initialState
                     });
+                    this.props.onTripSave(newList);
                     return;
                 default:
                     return;
@@ -498,8 +501,8 @@ const mapStateToProps = (state) => ({
   })
   
   const mapDispatchToProps = (dispatch) => ({
-    onTripSave: (details) => dispatch(SaveTrip(details)),
-    onTripDelete: (id) => dispatch(DeleteTrip(id)),
+    onTripSave: (newList) => dispatch(SaveTrip(newList)),
+    onTripDelete: (id,newList) => dispatch(DeleteTrip(id, newList)),
     onTripSaveCancel: () => dispatch(SaveTripCancel())
   })
 
