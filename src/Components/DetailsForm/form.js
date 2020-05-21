@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import { createMuiTheme, withStyles, ThemeProvider  } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
@@ -54,23 +54,73 @@ class form extends Component {
         const date = new Date();
         const todayDate = moment(date).format("yyyy-MM-DD");
         const startDate = moment(date).format("yyyy-MM-DD");   
-        this.state = {todayDate : todayDate, startDate: startDate};
+        const endDate = startDate;   
+
+        this.state = {todayDate : todayDate, 
+                        startDate: startDate,
+                        endDate : endDate,
+                        category: 0,
+                        todos:[]};
 
     }
     componentDidMount() {
-        console.log('I was triggered during componentDidMount',this.state);
+        console.log('State after Mount',this.state);
     }
 
     render(){
         const classes = this.props;
         const theme = this.props;
 
-        const handleChange = (name, event) => {
-            const target = event.target; // Do we need this?(unused in the function scope)!
-            console.log("New Date => ", event.target.value)
-              // Prints the new value.
+        const handleChange = (name, event, itemIndex = 0) => {
+            const value = event.target.value; 
+            console.log("New event => ", event)
+            switch(name){
+                case "startDate":
+                    this.setState({
+                        ...this.state, startDate: value, endDate : value
+                    });
+                    console.log('State after Start Date change',this.state);
+                    return;
+                case "endDate":
+                    this.setState({
+                        ...this.state, endDate : value
+                    });
+                    console.log('State after End Date change',this.state);
+                    return;
+                case "category":
+                    this.setState({
+                        ...this.state, category : value
+                    });
+                    console.log('State after category change',this.state);
+                    return;
+                case "addTodo":
+                    if(this.state.newTodo){
+                        //Sets the todo id by incrementing the id of last todo item if todo is not empty else id = 0
+                        this.setState({
+                            ...this.state, newTodo:'' , todos:[...this.state.todos,{id: this.state.todos.length? this.state.todos[this.state.todos.length-1].id+1: 0,text:this.state.newTodo}]
+                        });
+
+                    console.log('State after addTodo change',this.state);
+                    }
+                    return;
+                case "deleteTodo":
+                    console.log("event.target.id => ",event.target);
+
+                    const newTodo = this.state.todos.filter( (item, index)=>{if(item.id != itemIndex){ console.log("item.id =>",item.id);  return item;} });
+                    console.log("newTodo => ",newTodo);
+                    this.setState({
+                        ...this.state, todos:newTodo
+                    });
+                    console.log('State after deleteTodo change',this.state);
+                    return;
+                case "newTodo":
+                    this.setState({
+                        ...this.state, newTodo:value
+                    });
+                    console.log('State after addTodo change',this.state);
+            }
             
-            };
+        };
 
         return(
             <div>
@@ -103,13 +153,13 @@ class form extends Component {
                             <FormLabel >Category</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
-                        <FormControl variant="outlined" style={{width: '100%', alignItems:'left', alignContent:'left'}}>
-                            <Select
-                                    id="demo-simple-select-outlined"
-                                    value={0}
-                                    placeholder="Age">
+                        <FormControl variant="outlined" style={{width: '100%', textAlign:'left', alignContent:'left'}}>
+                            <Select id="demo-simple-select-outlined"
+                                    value={this.state.category}
+                                    onChange={(event) => handleChange("category", event)}
+                                    InputProps={{inputProps:{alignContent:'left'}}}>
                             <MenuItem value={0}>
-                                <em>None</em>
+                                None
                             </MenuItem>
                             <MenuItem value={10}>Business</MenuItem>
                             <MenuItem value={20}>Vacation</MenuItem>
@@ -129,7 +179,7 @@ class form extends Component {
                                         type="date"
                                         defaultValue={this.state.todayDate}
                                         InputProps={{inputProps: { min: this.state.todayDate} }}
-                                        onChange={(event) => handleChange("plannedDep", event)}/>
+                                        onChange={(event) => handleChange("startDate", event)}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -143,8 +193,9 @@ class form extends Component {
                                         placeholder="End Date" 
                                         variant="outlined" 
                                         type="date"
-                                        defaultValue={this.state.startDate}
-                                        InputProps={{inputProps: { min: this.state.startDate} }}/>
+                                        value={this.state.endDate}
+                                        InputProps={{inputProps: { min: this.state.startDate} }}
+                                        onChange={(event) => handleChange("endDate", event)}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -154,20 +205,52 @@ class form extends Component {
                         <Grid item xs={8}>
                         </Grid>
                     </Grid>
+                    {
+                        this.state.todos.map((item, index)=>
+                        
+                    <Grid container spacing={3} 
+                          key={index}>
+                       
+                        <Grid item xs={8}>
+                            <TextField id="outlined-basic" 
+                                        className={classes.formStyle}  
+                                        placeholder="ToDo Item" 
+                                        variant="outlined" 
+                                        value={item.text || ''}
+                                        InputProps={{inputProps:{readOnly: true}}}/>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button id={item.id}
+                                    style={{height: '100%', width: '100%'}}
+                                    size="small"
+                                    variant="contained"
+                                    color="secondary"
+                                    className={classes.button}
+                                    startIcon={<DeleteIcon />}
+                                    onClick={(event) => handleChange("deleteTodo", event, item.id)}>
+                                    Delete 
+                                </Button>
+                        </Grid>
+                          
+                    </Grid>)
+                    }
                     <Grid container spacing={3}>
                         <Grid item xs={8}>
                         <TextField id="outlined-basic" 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
-                                        variant="outlined" />
+                                        variant="outlined" 
+                                    onChange={(event) => handleChange("newTodo", event)}
+                                    value={this.state.newTodo}/>
                         </Grid>
                         <Grid item xs={4}>
-                            <Button style={{height: '100%'}}
+                            <Button style={{height: '100%', width: '100%'}}
                                     size="small"
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
-                                    startIcon={<AddIcon />}>
+                                    startIcon={<AddIcon />}
+                                    onClick={(event) => handleChange("addTodo", event)}>
                                     Add 
                                 </Button>
                         </Grid>
