@@ -86,6 +86,12 @@ class form extends Component {
         // This will erase any local state updates!
         // Do not do this.
         console.log("propChanging", nextProps);
+        if(nextProps.selectedTripId == null || nextProps.selectedTripId == -1)
+        {
+            this.setState({
+                ...this.state.initialState
+            });
+        }
         if(nextProps.item){
             const item = nextProps.item;
             this.setState({...this.state, 

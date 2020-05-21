@@ -20,8 +20,15 @@ class grid_list extends Component {
         //items = JSON.parse(window.localStorage.getItem("TripList"));
         console.log("get List items => ",items)
         const initialState = {items : items?items:[]}
-        this.state = {...initialState, initialState : initialState, itemSelected : -1, items:items};
+        this.state = {...initialState, initialState : initialState, itemSelected : props.selectedTrip, items:items};
         console.log("get List this.state => ",this.state)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.selectedTrip == null || nextProps.selectedTrip == -1)
+        {
+            this.setState({...this.state,itemSelected : nextProps.selectedTrip});
+        }
     }
 
     render(){

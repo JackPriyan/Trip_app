@@ -14,6 +14,7 @@ const initialState = {addedIds:[],filterSelected : 0, items:[]};
 
 
 const Trips = (state = initialState, action) => {
+    console.log("CALLED TYPE => ", action.type);
     switch (action.type){
         case FILTERCATEGORY:
             console.log("FILTERCATEGORY triggered => ", action.category);
@@ -25,10 +26,7 @@ const Trips = (state = initialState, action) => {
             console.log("SEARCHTEXT triggered => ", action.text);
             return {...state};
             break;
-        case ADDNEWTRIP:
-             console.log("ADDNEWTRIP triggered => ", action.isNewTrip);
-             return{...state,selectedTrip : -1, selectedTripId : -1 }
-             break;
+        
         case SELECTEDTRIP:
             console.log("SELECTEDTRIP triggered => ", action.selectedTrip);
             console.log("SELECTEDTRIP state => ", state);
@@ -45,6 +43,7 @@ const Trips = (state = initialState, action) => {
             return {...state, items: action.tripList,selectedTrip : -1, item: null, selectedTripId :-1};
             break;
         case SAVETRIPCANCEL:
+        case ADDNEWTRIP:
             return {...state , selectedTrip : -1, selectedTripId : -1}
             break;
         default:
