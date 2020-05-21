@@ -7,8 +7,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import {TripSelected} from '../../actions/action'
+import { connect } from 'react-redux'
 
-export default class grid_list extends Component {
+class grid_list extends Component {
 
     constructor(props){
         super();
@@ -29,14 +31,8 @@ export default class grid_list extends Component {
                 case "rowSelected":
                     newState = {
                         ...this.state, itemSelected: this.state.itemSelected === itemIndex ? -1 : itemIndex };
+                    this.props.onTripSelected(this.state.itemSelected === itemIndex ? -1 : itemIndex);
                     break;
-                case "search":
-                    newState = {
-                        ...this.state, search: value};
-                    break;
-                case "menuChange":
-                    newState = {
-                        ...this.state, categorySelected: itemIndex};
             }
             this.setState({...newState});
         }
@@ -96,3 +92,13 @@ export default class grid_list extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    filterSelected: 0 
+  })
+  
+  const mapDispatchToProps = (dispatch) => ({
+    onTripSelected: selectedTrip => dispatch(TripSelected(selectedTrip))
+  })
+
+  export default connect(mapStateToProps, mapDispatchToProps)(grid_list)

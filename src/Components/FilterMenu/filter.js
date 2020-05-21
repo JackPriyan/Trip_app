@@ -11,11 +11,15 @@ import MenuList from '@material-ui/core/MenuList';
 import { spacing } from '@material-ui/system';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
+import {FilterOption, SearchText, AddNewTrip} from '../../actions/action'
+import { connect } from 'react-redux'
 
-export default class filter extends Component {
+
+class filter extends Component {
 
     constructor(props){
         super();
+        console.log("filter props =>",props);
         this.state = {};
         const initialState = {searchText : '', 
                                 categorySelected: 0
@@ -37,10 +41,18 @@ export default class filter extends Component {
                 case "search":
                     newState = {
                         ...this.state, search: value};
+                    this.props.onSearchChange(this.state.searchText);
+                    break;
+                case "addTodo":
+                    this.props.onAddNewTripClick();
                     break;
                 case "menuChange":
                     newState = {
                         ...this.state, categorySelected: itemIndex};
+                    this.props.onMenuChange(itemIndex);
+                    break;
+                default:
+                    return;
             }
             this.setState({...newState});
         }
@@ -92,3 +104,15 @@ export default class filter extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    filterSelected: 0 
+  })
+  
+  const mapDispatchToProps = (dispatch) => ({
+    onMenuChange: selectedCategory => dispatch(FilterOption(selectedCategory)),
+    onSearchChange: searchText => dispatch(SearchText(searchText)),
+    onAddNewTripClick: () => dispatch(AddNewTrip(true))
+  })
+
+  export default connect(mapStateToProps, mapDispatchToProps)(filter)
