@@ -20,6 +20,21 @@ export default class grid_list extends Component {
 
     render(){
         const headers = ["Title", "Destination", "Duration", "Category", "Reminder set", "Items Needed", "Trip Planning State"];
+        
+        const checkDoneStatus = (todos) => {
+            const doneList = todos.filter(todo=> todo.isDone);
+            console.log("doneList => ",doneList.length);
+            if(todos.length === doneList.length)
+                return 2;
+            else if(doneList.length>0)
+                return 1;
+            else
+                return 0;
+        }
+
+        const itemStatus = ["Created", "In Progress", "Ready"]
+        const itemType = ["","Business", "Vacation"]
+
         return(
                   <TableContainer component={Paper} style={{height:'100%'}}>
                     <Table aria-label="simple table" style={{ width: "auto", tableLayout: "auto" }}>
@@ -35,13 +50,13 @@ export default class grid_list extends Component {
                         {
                             this.state.items.map((item, index)=>
                             <TableRow key={index}>
-                                <TableCell align="right" component="th" scope="row" width={150}>{item.title}</TableCell>
-                                <TableCell align="right" component="th" scope="row" width={150}>{item.destination}</TableCell>
-                                <TableCell align="right" >{item.duration+(item.duration > 1? " Days": " Day" )}</TableCell>
-                                <TableCell align="right">{item.category}</TableCell>
+                                <TableCell align="right">{item.title}</TableCell>
+                                <TableCell align="right">{item.destination}</TableCell>
+                                <TableCell align="right">{item.duration+(item.duration > 1? " Days": " Day" )}</TableCell>
+                                <TableCell align="right">{itemType[item.category]}</TableCell>
                                 <TableCell align="right">{item.isReminderSet.toString()}</TableCell>
-                                <TableCell align="right">{item.todos && item.todos.length ? true.toString(): false.toString()}</TableCell>
-                                <TableCell align="right">{item.todos && item.todos.length ? true.toString(): false.toString()}</TableCell>
+                                <TableCell align="right">{checkDoneStatus(item.todos) === 2 ?"Done":"Yes"}</TableCell>
+                                <TableCell align="right">{itemStatus[checkDoneStatus(item.todos)]}</TableCell>
                             </TableRow>
                             )
                         }

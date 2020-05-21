@@ -254,8 +254,8 @@ class form extends Component {
                             <MenuItem value={0}>
                                 None
                             </MenuItem>
-                            <MenuItem value={10}>Business</MenuItem>
-                            <MenuItem value={20}>Vacation</MenuItem>
+                            <MenuItem value={1}>Business</MenuItem>
+                            <MenuItem value={2}>Vacation</MenuItem>
                             </Select>
                             </FormControl>
                         </Grid>
