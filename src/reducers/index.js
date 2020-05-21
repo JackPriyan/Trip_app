@@ -17,7 +17,7 @@ const Trips = (state = initialState, action) => {
             console.log("FILTERCATEGORY triggered => ", action.category);
             console.log("FILTERCATEGORY state => ", state);
 
-            return {...state, filterSelected: action.category,selectedTrip : -1};
+            return {...state, filterSelected: action.category, selectedTrip : -1, selectedTripId : null};
             break;
         case SEARCHTEXT:
             console.log("SEARCHTEXT triggered => ", action.text);
@@ -41,8 +41,10 @@ const Trips = (state = initialState, action) => {
             break;
         case SAVETRIPCANCEL:
             return {...state , selectedTripId : null}
+            break;
         default:
             return state;
+            break;
         return state;
     }
   }

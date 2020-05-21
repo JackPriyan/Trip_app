@@ -72,7 +72,8 @@ class form extends Component {
                                 newTodo: '',
                                 isReminderSet:false,
                                 reminderTime:'',
-                                selectedTripId: null};
+                                selectedTripId: null,
+                                id:null};
         this.state = {...initialState, initialState : initialState, item:props.item};
         //window.localStorage.clear();
 
@@ -80,6 +81,37 @@ class form extends Component {
     componentDidMount() {
         console.log('State after Mount',this.state);
     }
+
+    componentWillReceiveProps(nextProps) {
+        // This will erase any local state updates!
+        // Do not do this.
+        console.log("propChanging", nextProps);
+        if(nextProps.item){
+            const item = nextProps.item;
+            this.setState({...this.state, 
+                startDate: item.startDate,
+                endDate : item.endDate,
+                category: item.category,
+                todos:item.todos,
+                isEdit : true,
+                isSaveEnabled: true,
+                title: item.title,
+                destination: item.destination,
+                isReminderSet:item.isReminderSet,
+                reminderTime:item.reminderTime,
+                id: item.id});
+        }
+      }
+      
+    // static getDerivedStateFromProps(props, current_state) {
+    //     if (current_state.value !== props.value) {
+    //       return {
+    //         value: props.value,
+    //         computed_prop: heavy_computation(props.value)
+    //       }
+    //     }
+    //     return null
+    // }
 
 
    
@@ -176,7 +208,7 @@ class form extends Component {
                     console.log("cancel", this.state.initialState);
                     itemsDelete = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("itemsDelete => ", itemsDelete);
-                    const newListDelete = itemsDelete && itemsDelete.length > 0? itemsDelete.filter((item)=>{ if(item.id !== this.state.selectedTripId) return item }):[];
+                    const newListDelete = itemsDelete && itemsDelete.length > 0? itemsDelete.filter((item)=>{ if(item.id !== this.state.id) return item }):[];
                     this.setState({
                         ...this.state.initialState
                     });
@@ -187,9 +219,9 @@ class form extends Component {
                     var items = [];
                     items = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("items => ", items);
-                    const newList = items && items.length > 0? items:[];
+                    const newList = items && items.length > 0? this.state.id >= 0? items.filter((item)=>{ if(item.id !== this.state.id) return item }) : items:[];
                     newList.push({
-                        id: newList.length > 0? newList[newList.length-1].id+1 : 0,
+                        id: this.state.id >= 0 ? this.state.id : newList.length > 0? newList[newList.length-1].id+1 : 0,
                         title : this.state.title,
                         destination: this.state.destination,
                         category: this.state.category,
@@ -231,7 +263,7 @@ class form extends Component {
                                         className={classes.formStyle} 
                                         placeholder="Title" 
                                         variant="outlined" 
-                                        value={this.props.item? this.props.item.title : this.state.title||''}
+                                        value={this.state.title||''}
                                         onChange={(event) => handleChange("title", event)}
                                         style={{width:'100%'}}
                                         margin="dense"/>
@@ -318,12 +350,12 @@ class form extends Component {
                     <Grid container spacing={3} 
                           key={index}>
                         <Grid item xs={1}>
-                            <Checkbox name={index} color="primary"
+                            <Checkbox name={"Check"+index} color="primary"
                                         checked={item.isDone}
                                         onChange={(event) => handleChange("checkToDo", event, item.id)}/>
                         </Grid>
                         <Grid item xs={7}>
-                            <TextField id="todoItem-text" 
+                            <TextField id={"todoItem-text"+index} 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
