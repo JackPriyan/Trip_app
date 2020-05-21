@@ -10,7 +10,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import {TripSelected} from '../../actions/action'
 import { connect } from 'react-redux'
 import {getAllTrips} from '../../actions/action'
-
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 class grid_list extends Component {
 
     constructor(props){
@@ -83,14 +84,13 @@ class grid_list extends Component {
                                     <Checkbox
                                         checked={index === this.props.selectedTrip}
                                         onChange={(event) => handleChange("rowSelected", event, index)}
-                                        inputProps={{ 'aria-label': 'select all desserts' }}
                                     />
                                 </TableCell>
                                 <TableCell align="right">{item.title}</TableCell>
                                 <TableCell align="right">{item.destination}</TableCell>
                                 <TableCell align="right">{item.duration+(item.duration > 1? " Days": " Day" )}</TableCell>
                                 <TableCell align="right">{itemType[item.category]}</TableCell>
-                                <TableCell align="right">{item.isReminderSet.toString()}</TableCell>
+                                <TableCell align="right">{item.isReminderSet?<NotificationsActiveIcon/>:<NotificationsOffIcon/>}</TableCell>
                                 <TableCell align="right">{checkDoneStatus(item.todos) === 2 ?"Done":"Yes"}</TableCell>
                                 <TableCell align="right">{itemStatus[checkDoneStatus(item.todos)]}</TableCell>
                             </TableRow>

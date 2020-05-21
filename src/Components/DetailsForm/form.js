@@ -19,7 +19,7 @@ import moment from 'moment'
 import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux'
 import {SaveTrip, DeleteTrip,SaveTripCancel} from '../../actions/action'
-
+import AlertDialog from '../../Components/Dialog/dialog'
 const theme = createMuiTheme({
     palette: {
       primary: green,
@@ -57,10 +57,12 @@ class form extends Component {
         console.log("form props => ",props);
         const date = new Date();
         const todayDate = moment(date).format("yyyy-MM-DD");
+        const todayDateTime = moment().format("YYYY-MM-DD[T]HH:mm");
         const startDate = moment(date).format("yyyy-MM-DD");   
         const endDate = startDate;   
         const item = props.item;
-        const initialState = {todayDate : todayDate, 
+        const initialState = {todayDate : todayDate,
+                                todayDateTime: todayDateTime, 
                                 startDate: startDate,
                                 endDate : endDate,
                                 category: 0,
@@ -73,7 +75,8 @@ class form extends Component {
                                 isReminderSet:false,
                                 reminderTime:'',
                                 selectedTripId: null,
-                                id:null};
+                                id:null,
+                                isReminderClicked:false};
         this.state = {...initialState, initialState : initialState, item:props.item};
         //window.localStorage.clear();
 
@@ -105,7 +108,8 @@ class form extends Component {
                 destination: item.destination,
                 isReminderSet:item.isReminderSet,
                 reminderTime:item.reminderTime,
-                id: item.id});
+                id: item.id,
+                isReminderClicked: false});
         }
       }
       
@@ -142,9 +146,17 @@ class form extends Component {
         
 
         const handleChange = (name, event, itemIndex = 0) => {
-            const value = event.target.value; 
+            const value = event ? event.target ? event.target.value : 0: 0 ; 
             var newState;
             switch(name){
+                case "setReminder":
+                    newState = {
+                        ...this.state, isReminderSet : !this.state.isReminderSet};
+                    break;
+                case "openReminder":
+                    newState = {
+                        ...this.state, isReminderClicked: !this.state.isReminderClicked, isReminderSet : !this.state.isReminderSet};
+                    break;
                 case "title":
                     newState = {
                         ...this.state, title: value};
@@ -419,7 +431,11 @@ class form extends Component {
                     </Grid>
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
-                               
+                        <AlertDialog isOpen={this.state.isReminderClicked} 
+                                        onClose={(event) => handleChange("setReminder", event)}
+                                        minDate={this.state.todayDateTime}/>
+                        <Checkbox   name={"Check"}
+                                    onChange={(event) => handleChange("setReminder", event)}></Checkbox>
                         </Grid>
                         <Grid item xs={6}>
                             <Button
@@ -428,7 +444,7 @@ class form extends Component {
                                 color="secondary"
                                 className={classes.button}
                                 startIcon={<AddAlertIcon />}
-                                onClick={(event) => handleChange("setReminder", event)}>
+                                onClick={(event) => handleChange("openReminder", event)}>
                                 Set Reminder
                             </Button>
                         </Grid>
