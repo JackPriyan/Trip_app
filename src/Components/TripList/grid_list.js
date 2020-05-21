@@ -34,7 +34,7 @@ class grid_list extends Component {
                 case "rowSelected":
                     newState = {
                         ...this.state, itemSelected: this.state.itemSelected === itemIndex ? -1 : itemIndex };
-                    this.props.onTripSelected(this.state.itemSelected === itemIndex ? -1 : itemIndex);
+                    this.props.onTripSelected(this.state.itemSelected === itemIndex ? -1 : itemIndex, this.props.items[itemIndex].id);
                     break;
             }
             this.setState({...newState});
@@ -67,14 +67,14 @@ class grid_list extends Component {
                         </TableHead>
                         <TableBody>
                         {
-                            this.state.items.map((item, index)=>
+                            this.props.items.map((item, index)=>
                             <TableRow key={index} 
-                                        selected={index === this.state.itemSelected}
+                                        selected={index === this.props.selectedTrip}
                                         onClick={(event) => handleChange("rowSelected", event, index)}
                                         component="th" scope="row">
                                 <TableCell >
                                     <Checkbox
-                                        checked={index === this.state.itemSelected}
+                                        checked={index === this.props.selectedTrip}
                                         onChange={(event) => handleChange("rowSelected", event, index)}
                                         inputProps={{ 'aria-label': 'select all desserts' }}
                                     />
@@ -117,12 +117,13 @@ const getFilteredList = (items, category) => {
 
 const mapStateToProps = (state) => ({
     filterSelected: state.filterSelected,
+    selectedTrip: state.selectedTrip,
     items: getFilteredList(state.items,state.filterSelected)
   })
   
   const mapDispatchToProps = (dispatch) => ({
     getAllTrips : () => getAllTrips(),
-    onTripSelected: selectedTrip => dispatch(TripSelected(selectedTrip))
+    onTripSelected: (selectedTrip,id) => dispatch(TripSelected(selectedTrip,id))
   })
 
   export default connect(mapStateToProps, mapDispatchToProps)(grid_list)

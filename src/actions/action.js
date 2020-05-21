@@ -4,16 +4,26 @@ import {
     SEARCHTEXT,
     ADDNEWTRIP,
     TRIPDB,
-    TRIPLIST
+    TRIPLIST,
+    SAVETRIP,
+    DELETETRIP,
+    SAVETRIPCANCEL
   } from '../constants/ActionTypes'
 
 export const FilterOption = category => ({ type: FILTERCATEGORY, category});
 
-export const TripSelected = selectedTrip => ({ type: SELECTEDTRIP, selectedTrip});
+export const TripSelected = (selectedTrip, id) => ({ type: SELECTEDTRIP, selectedTrip,id});
 
 export const SearchText = text => ({ type: SEARCHTEXT, text});
 
 export const AddNewTrip = isNewTrip => ({ type: ADDNEWTRIP, isNewTrip});
+
+export const SaveTrip = tripDetail => ({ type: SAVETRIP, tripDetail});
+
+export const DeleteTrip = tripId => ({ type: DELETETRIP, tripId});
+
+export const SaveTripCancel = () => ({ type: SAVETRIPCANCEL});
+
 
 const getTripList = tripList => ({
     type: TRIPLIST,

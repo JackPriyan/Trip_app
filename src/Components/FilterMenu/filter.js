@@ -60,7 +60,7 @@ class filter extends Component {
             <Paper style={{height:'100%', padding: '20px'}}>
                 <Grid container spacing={0}>
                     <Grid item xs={8}>
-                        <TextField  id="outlined-basic" 
+                        <TextField  id="search-text" 
                             placeholder="Search.." 
                             variant="outlined" 
                             value={this.state.searchText ||''}

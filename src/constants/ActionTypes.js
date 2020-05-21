@@ -6,3 +6,9 @@ export const ADDNEWTRIP = 'ADDNEWTRIP'
 export const TRIPLIST = "TRIPLIST"
 
 export const TRIPDB = "TripList"
+
+export const SAVETRIP = "SAVETRIP"
+
+export const DELETETRIP = "DELETETRIP"
+
+export const SAVETRIPCANCEL = "SAVETRIPCANCEL"

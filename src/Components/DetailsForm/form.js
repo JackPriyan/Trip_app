@@ -17,6 +17,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment'
 import Checkbox from '@material-ui/core/Checkbox';
+import { connect } from 'react-redux'
+import {SaveTrip, DeleteTrip,SaveTripCancel} from '../../actions/action'
 
 const theme = createMuiTheme({
     palette: {
@@ -52,10 +54,12 @@ class form extends Component {
     constructor(props){
         super();
         this.state = {};
+        console.log("form props => ",props);
         const date = new Date();
         const todayDate = moment(date).format("yyyy-MM-DD");
         const startDate = moment(date).format("yyyy-MM-DD");   
         const endDate = startDate;   
+        const item = props.item;
         const initialState = {todayDate : todayDate, 
                                 startDate: startDate,
                                 endDate : endDate,
@@ -69,7 +73,7 @@ class form extends Component {
                                 isReminderSet:false,
                                 reminderTime:'',
                                 selectedTripId: null};
-        this.state = {...initialState, initialState : initialState};
+        this.state = {...initialState, initialState : initialState, item:props.item};
         //window.localStorage.clear();
 
     }
@@ -165,6 +169,7 @@ class form extends Component {
                     this.setState({
                         ...this.state.initialState
                     });
+                    this.props.onTripSaveCancel();
                     return;
                 case "delete":
                     var itemsDelete = [];
@@ -218,12 +223,15 @@ class form extends Component {
                         <Grid item xs={4}>
                             <FormLabel >Title</FormLabel>
                         </Grid>
+                        {console.log(this.props.item)}
+                        {console.log(this.state.item)}
+
                         <Grid item xs={8}>
-                            <TextField  id="outlined-basic" 
+                            <TextField  id="title-text" 
                                         className={classes.formStyle} 
                                         placeholder="Title" 
                                         variant="outlined" 
-                                        value={this.state.title||''}
+                                        value={this.props.item? this.props.item.title : this.state.title||''}
                                         onChange={(event) => handleChange("title", event)}
                                         style={{width:'100%'}}
                                         margin="dense"/>
@@ -234,7 +242,7 @@ class form extends Component {
                             <FormLabel >Destination</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField id="outlined-basic" 
+                            <TextField id="destination-text" 
                                         className={classes.formStyle}  
                                         placeholder="Destination" 
                                         variant="outlined" 
@@ -269,7 +277,7 @@ class form extends Component {
                         </Grid>
                         <Grid item xs={8}>
                             <TextField  style={{width: '100%'}}
-                                        id="outlined-basic" 
+                                        id="startDate-text" 
                                         className={classes.formStyle}  
                                         variant="outlined" 
                                         type="date"
@@ -285,7 +293,7 @@ class form extends Component {
                             <FormLabel >End Date</FormLabel>
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField id="outlined-basic" 
+                            <TextField id="endDate-text" 
                                         style={{width: '100%'}}
                                         className={classes.formStyle}  
                                         placeholder="End Date" 
@@ -315,7 +323,7 @@ class form extends Component {
                                         onChange={(event) => handleChange("checkToDo", event, item.id)}/>
                         </Grid>
                         <Grid item xs={7}>
-                            <TextField id="outlined-basic" 
+                            <TextField id="todoItem-text" 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
@@ -345,7 +353,7 @@ class form extends Component {
                             
                         </Grid>
                         <Grid item xs={7}  style={{width:'100%'}}>
-                        <TextField id="outlined-basic" 
+                        <TextField id="toDoNew-text" 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
@@ -440,4 +448,27 @@ form.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(form);
+const getItemDetails = (items,id) => {
+    if(id>=0){
+        return items.find(item => item.id == id);
+    }
+    console.log("getItemDetails => ",null);
+    return null;
+}
+
+
+const mapStateToProps = (state) => ({
+    filterSelected: state.filterSelected,
+    selectedTrip: state.selectedTrip,
+    items: state.items,
+    item: getItemDetails(state.items, state.selectedTripId),
+    selectedTripId: state.selectedTripId
+  })
+  
+  const mapDispatchToProps = (dispatch) => ({
+    onTripSave: (details) => dispatch(SaveTrip(details)),
+    onTripDelete: (id) => dispatch(DeleteTrip(id)),
+    onTripSaveCancel: () => dispatch(SaveTripCancel())
+  })
+
+  export default connect(mapStateToProps, mapDispatchToProps)(form)
