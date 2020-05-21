@@ -32,9 +32,7 @@ function App() {
           </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper}>
             <ListPanel></ListPanel>
-          </Paper>
         </Grid>
         <Grid item xs={5}>
           <Paper className={classes.paper}>

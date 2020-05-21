@@ -16,6 +16,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment'
+import Checkbox from '@material-ui/core/Checkbox';
 
 const theme = createMuiTheme({
     palette: {
@@ -129,18 +130,31 @@ class form extends Component {
                     if(this.state.newTodo.trim()){
                         //Sets the todo id by incrementing the id of last todo item if todo is not empty else id = 0
                         newState = {
-                            ...this.state, newTodo:'' , todos:[...this.state.todos,{id: this.state.todos.length? this.state.todos[this.state.todos.length-1].id+1: 0,text:this.state.newTodo}]
+                            ...this.state, newTodo:'' , todos:[...this.state.todos,{id: this.state.todos.length? this.state.todos[this.state.todos.length-1].id+1: 0,text:this.state.newTodo, isDone: false}]
                         };
 
                     console.log('State after addTodo change',this.state);
                     }
                     break;
                 case "deleteTodo":
+                    //Removing the selected todo from todo array by id
                     const newTodo = this.state.todos.filter( (item, index)=>{if(item.id != itemIndex){ console.log("item.id =>",item.id);  return item;} });
                     newState = {
                         ...this.state, todos:newTodo
                     };
                     break;
+                case "checkToDo":
+                    const checkTodo = this.state.todos.filter( (item, index)=>{if(item.id == itemIndex){ console.log("item.id =>",item.id); item.isDone = !item.isDone; } return item; });
+                    newState = {
+                        ...this.state, todos:checkTodo
+                    };
+                    break;
+                case "updateToDoText":
+                    const updateTodo = this.state.todos.filter( (item, index)=>{if(item.id == itemIndex){ console.log("item.id =>",item.id); item.text = value; } return item; });
+                    newState = {
+                        ...this.state, todos:updateTodo
+                    };
+                        break;
                 case "newTodo":
                     newState = {
                         ...this.state, newTodo:value
@@ -178,7 +192,10 @@ class form extends Component {
                         endDate: this.state.endDate,
                         todos: this.state.todos,
                         isReminderSet: this.state.isReminderSet,
-                        reminderTime: this.state.reminderTime
+                        reminderTime: this.state.reminderTime,
+                        state: 0,
+                        duration: (moment.duration(moment(this.state.endDate, "YYYY-MM-DD").diff(this.state.startDate, "YYYY-MM-DD")).asDays())
+                        
                     });
                     console.log("newList => ", newList);
                     window.localStorage.setItem("TripList", JSON.stringify(newList));
@@ -207,7 +224,8 @@ class form extends Component {
                                         placeholder="Title" 
                                         variant="outlined" 
                                         value={this.state.title||''}
-                                        onChange={(event) => handleChange("title", event)}/>
+                                        onChange={(event) => handleChange("title", event)}
+                                        style={{width:'100%'}}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -220,7 +238,8 @@ class form extends Component {
                                         placeholder="Destination" 
                                         variant="outlined" 
                                         value={this.state.destination || ''}
-                                        onChange={(event) => handleChange("destination", event)}/>
+                                        onChange={(event) => handleChange("destination", event)}
+                                        style={{width:'100%'}}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -285,14 +304,18 @@ class form extends Component {
                         
                     <Grid container spacing={3} 
                           key={index}>
-                       
-                        <Grid item xs={8}>
+                        <Grid item xs={1}>
+                            <Checkbox name={index} color="primary"
+                                        checked={item.isDone}
+                                        onChange={(event) => handleChange("checkToDo", event, item.id)}/>
+                        </Grid>
+                        <Grid item xs={7}>
                             <TextField id="outlined-basic" 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
                                         value={item.text || ''}
-                                        InputProps={{inputProps:{readOnly: true}}}/>
+                                        onChange={(event) => handleChange("updateToDoText", event, item.id)}/>
                         </Grid>
                         <Grid item xs={4}>
                             <Button id={item.id}
@@ -310,7 +333,10 @@ class form extends Component {
                     </Grid>)
                     }
                     <Grid container spacing={3}>
-                        <Grid item xs={8}>
+                        <Grid item xs={1} style={{width:'2rem'}}>
+                            
+                        </Grid>
+                        <Grid item xs={7}  style={{width:'100%'}}>
                         <TextField id="outlined-basic" 
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
@@ -318,7 +344,7 @@ class form extends Component {
                                     onChange={(event) => handleChange("newTodo", event)}
                                     value={this.state.newTodo || ''}/>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={4} style={{width:'100%'}}>
                             <Button style={{height: '100%', width: '100%'}}
                                     size="small"
                                     variant="contained"
