@@ -25,6 +25,7 @@ export const getAllTrips = () => dispatch => {
     var items = [];
     items = JSON.parse(window.localStorage.getItem(TRIPDB));
     console.log("get List items => ",items)
-    const tripList = {items : items?items:[]}
+    const tripList = items?items:[];
     dispatch(getTripList(tripList));
   }
+

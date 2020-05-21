@@ -4,16 +4,18 @@ import {
     SELECTEDTRIP,
     SEARCHTEXT,
     ADDNEWTRIP,
-    TRIPDB
+    TRIPDB,
+    TRIPLIST
   } from '../constants/ActionTypes'
+const initialState = {addedIds:[],filterSelected : 0, items:[]};
 
-const initialState = {addedIds:[],filterSelected : 0};
 
-
-const Trips = (state = initialState.addedIds, action) => {
+const Trips = (state = initialState, action) => {
     switch (action.type){
         case FILTERCATEGORY:
             console.log("FILTERCATEGORY triggered => ", action.category);
+            console.log("FILTERCATEGORY state => ", state);
+
             return {...state, filterSelected: action.category};
             break;
         case SEARCHTEXT:
@@ -26,7 +28,11 @@ const Trips = (state = initialState.addedIds, action) => {
              break;
         case SELECTEDTRIP:
             console.log("SELECTEDTRIP triggered => ", action.selectedTrip);
-   
+            console.log("FILTERCATEGORY state => ", state);
+            return {...state, selectedTrip: action.selectedTrip};
+            break;
+        case TRIPLIST:
+            return {...state, items: action.tripList};
             break;
         default:
             return state;

@@ -9,16 +9,19 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import {TripSelected} from '../../actions/action'
 import { connect } from 'react-redux'
+import {getAllTrips} from '../../actions/action'
 
 class grid_list extends Component {
 
     constructor(props){
         super();
-        var items = [];
-        items = JSON.parse(window.localStorage.getItem("TripList"));
+        console.log("grid_list props =>",props);
+        var items =props.items? props.items: [];
+        //items = JSON.parse(window.localStorage.getItem("TripList"));
         console.log("get List items => ",items)
         const initialState = {items : items?items:[]}
-        this.state = {...initialState, initialState : initialState, itemSelected : -1};
+        this.state = {...initialState, initialState : initialState, itemSelected : -1, items:items};
+        console.log("get List this.state => ",this.state)
     }
 
     render(){
@@ -93,11 +96,32 @@ class grid_list extends Component {
     }
 }
 
+const getFilteredList = (items, category) => {
+    console.log("getFilteredList items =>",items );
+    console.log("getFilteredList category =>",category );
+
+    switch (category) {
+      case 0:
+        return items
+      case 1:
+      case 2:
+          const filteredItem = items.filter(t => {return t.category === category});
+          console.log("items Filtered", filteredItem);
+        return items.filter(t => {return t.category === category})
+      default:
+        return items;
+    }
+    return items;
+
+}
+
 const mapStateToProps = (state) => ({
-    filterSelected: 0 
+    filterSelected: state.filterSelected,
+    items: getFilteredList(state.items,state.filterSelected)
   })
   
   const mapDispatchToProps = (dispatch) => ({
+    getAllTrips : () => getAllTrips(),
     onTripSelected: selectedTrip => dispatch(TripSelected(selectedTrip))
   })
 
