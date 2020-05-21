@@ -225,7 +225,8 @@ class form extends Component {
                                         variant="outlined" 
                                         value={this.state.title||''}
                                         onChange={(event) => handleChange("title", event)}
-                                        style={{width:'100%'}}/>
+                                        style={{width:'100%'}}
+                                        margin="dense"/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -239,7 +240,8 @@ class form extends Component {
                                         variant="outlined" 
                                         value={this.state.destination || ''}
                                         onChange={(event) => handleChange("destination", event)}
-                                        style={{width:'100%'}}/>
+                                        style={{width:'100%'}}
+                                        margin="dense"/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -250,7 +252,8 @@ class form extends Component {
                         <FormControl variant="outlined" style={{width: '100%', textAlign:'left', alignContent:'left'}}>
                             <Select id="demo-simple-select-outlined"
                                     value={this.state.category}
-                                    onChange={(event) => handleChange("category", event)}>
+                                    onChange={(event) => handleChange("category", event)}
+                                    margin="dense">
                             <MenuItem value={0}>
                                 None
                             </MenuItem>
@@ -273,7 +276,8 @@ class form extends Component {
                                         defaultValue={this.state.todayDate}
                                         value={this.state.startDate}
                                         InputProps={{inputProps: { min: this.state.todayDate} }}
-                                        onChange={(event) => handleChange("startDate", event)}/>
+                                        onChange={(event) => handleChange("startDate", event)}
+                                        margin="dense"/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -289,7 +293,8 @@ class form extends Component {
                                         type="date"
                                         value={this.state.endDate}
                                         InputProps={{inputProps: { min: this.state.startDate} }}
-                                        onChange={(event) => handleChange("endDate", event)}/>
+                                        onChange={(event) => handleChange("endDate", event)}
+                                        margin="dense"/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -315,12 +320,14 @@ class form extends Component {
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
                                         value={item.text || ''}
+                                        margin="dense"
                                         onChange={(event) => handleChange("updateToDoText", event, item.id)}/>
                         </Grid>
                         <Grid item xs={4}>
+                        <div style={{ paddingTop:'8px'}}>
                             <Button id={item.id}
-                                    style={{height: '100%', width: '100%'}}
-                                    size="small"
+                                    style={{width: '100%'}}
+                                    size="large"
                                     variant="contained"
                                     color="secondary"
                                     className={classes.button}
@@ -328,6 +335,7 @@ class form extends Component {
                                     onClick={(event) => handleChange("deleteTodo", event, item.id)}>
                                     Delete 
                                 </Button>
+                            </div>
                         </Grid>
                           
                     </Grid>)
@@ -341,19 +349,23 @@ class form extends Component {
                                         className={classes.formStyle}  
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
+                                        margin="dense"
                                     onChange={(event) => handleChange("newTodo", event)}
                                     value={this.state.newTodo || ''}/>
                         </Grid>
                         <Grid item xs={4} style={{width:'100%'}}>
-                            <Button style={{height: '100%', width: '100%'}}
-                                    size="small"
+                            <div style={{ paddingTop:'8px'}}>
+                            <Button style={{ width: '100%'}}
+                                    size="large"
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
                                     startIcon={<AddIcon />}
-                                    onClick={(event) => handleChange("addTodo", event)}>
+                                    onClick={(event) => handleChange("addTodo", event)}
+                                    margin="dense">
                                     Add 
                                 </Button>
+                                </div>
                         </Grid>
                     </Grid>
                     <Grid container spacing={2}>

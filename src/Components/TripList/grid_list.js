@@ -6,6 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 
 export default class grid_list extends Component {
 
@@ -15,12 +16,31 @@ export default class grid_list extends Component {
         items = JSON.parse(window.localStorage.getItem("TripList"));
         console.log("get List items => ",items)
         const initialState = {items : items?items:[]}
-        this.state = {...initialState, initialState : initialState};
+        this.state = {...initialState, initialState : initialState, itemSelected : -1};
     }
 
     render(){
-        const headers = ["Title", "Destination", "Duration", "Category", "Reminder set", "Items Needed", "Trip Planning State"];
+        const headers = ["","Title", "Destination", "Duration", "Category", "Reminder set", "Items Needed", "Trip Planning State"];
         
+        const handleChange = (name, event, itemIndex = 0) => {
+            const value = event.target.value; 
+            var newState;
+            switch(name){
+                case "rowSelected":
+                    newState = {
+                        ...this.state, itemSelected: this.state.itemSelected === itemIndex ? -1 : itemIndex };
+                    break;
+                case "search":
+                    newState = {
+                        ...this.state, search: value};
+                    break;
+                case "menuChange":
+                    newState = {
+                        ...this.state, categorySelected: itemIndex};
+            }
+            this.setState({...newState});
+        }
+
         const checkDoneStatus = (todos) => {
             const doneList = todos.filter(todo=> todo.isDone);
             console.log("doneList => ",doneList.length);
@@ -37,9 +57,9 @@ export default class grid_list extends Component {
 
         return(
                   <TableContainer component={Paper} style={{height:'100%'}}>
-                    <Table aria-label="simple table" style={{ width: "auto", tableLayout: "auto" }}>
+                    <Table aria-label="simple table" size="small" style={{ width: "auto", tableLayout: "auto" }}>
                         <TableHead style={{height:'100%', backgroundColor: '#3f51b5', color: 'white'}}>
-                        <TableRow>
+                        <TableRow component="th" scope="row">
                         {headers.map((header)=>
                             <TableCell align="right" style={{color: 'white'}}>{header}</TableCell>
                         )
@@ -49,7 +69,17 @@ export default class grid_list extends Component {
                         <TableBody>
                         {
                             this.state.items.map((item, index)=>
-                            <TableRow key={index}>
+                            <TableRow key={index} 
+                                        selected={index === this.state.itemSelected}
+                                        onClick={(event) => handleChange("rowSelected", event, index)}
+                                        component="th" scope="row">
+                                <TableCell >
+                                    <Checkbox
+                                        checked={index === this.state.itemSelected}
+                                        onChange={(event) => handleChange("rowSelected", event, index)}
+                                        inputProps={{ 'aria-label': 'select all desserts' }}
+                                    />
+                                </TableCell>
                                 <TableCell align="right">{item.title}</TableCell>
                                 <TableCell align="right">{item.destination}</TableCell>
                                 <TableCell align="right">{item.duration+(item.duration > 1? " Days": " Day" )}</TableCell>
