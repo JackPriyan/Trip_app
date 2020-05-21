@@ -55,71 +55,142 @@ class form extends Component {
         const todayDate = moment(date).format("yyyy-MM-DD");
         const startDate = moment(date).format("yyyy-MM-DD");   
         const endDate = startDate;   
-
-        this.state = {todayDate : todayDate, 
-                        startDate: startDate,
-                        endDate : endDate,
-                        category: 0,
-                        todos:[]};
+        const initialState = {todayDate : todayDate, 
+                                startDate: startDate,
+                                endDate : endDate,
+                                category: 0,
+                                todos:[],
+                                isEdit : false,
+                                isSaveEnabled: false,
+                                title: '',
+                                destination: '',
+                                newTodo: '',
+                                isReminderSet:false,
+                                reminderTime:'',
+                                selectedTripId: null};
+        this.state = {...initialState, initialState : initialState};
+        //window.localStorage.clear();
 
     }
     componentDidMount() {
         console.log('State after Mount',this.state);
     }
 
+
+   
+
     render(){
         const classes = this.props;
         const theme = this.props;
 
+        const validate = (newState) => {
+            if((newState.title && newState.title.trim()) && 
+                (newState.destination && newState.destination.trim()) &&
+                newState.category !== 0 &&
+                newState.startDate && newState.endDate){
+                    this.setState({...newState, isSaveEnabled: true});
+                    console.log("newState => ", newState);
+                }
+            else{
+                console.log("newState => ", newState);
+                this.setState({...newState, isSaveEnabled: false}); 
+            }
+        }
+        
+
         const handleChange = (name, event, itemIndex = 0) => {
             const value = event.target.value; 
-            console.log("New event => ", event)
+            var newState;
             switch(name){
+                case "title":
+                    newState = {
+                        ...this.state, title: value};
+                    break;
+                case "destination":
+                    newState = {
+                        ...this.state, destination: value};
+                    break;
                 case "startDate":
-                    this.setState({
+                    newState = {
                         ...this.state, startDate: value, endDate : value
-                    });
-                    console.log('State after Start Date change',this.state);
-                    return;
+                    };
+                    break;
                 case "endDate":
-                    this.setState({
+                    newState = {
                         ...this.state, endDate : value
-                    });
-                    console.log('State after End Date change',this.state);
-                    return;
+                    };
+                    break;
                 case "category":
-                    this.setState({
+                    newState = {
                         ...this.state, category : value
-                    });
-                    console.log('State after category change',this.state);
-                    return;
+                    };
+                    break;
                 case "addTodo":
-                    if(this.state.newTodo){
+                    if(this.state.newTodo.trim()){
                         //Sets the todo id by incrementing the id of last todo item if todo is not empty else id = 0
-                        this.setState({
+                        newState = {
                             ...this.state, newTodo:'' , todos:[...this.state.todos,{id: this.state.todos.length? this.state.todos[this.state.todos.length-1].id+1: 0,text:this.state.newTodo}]
-                        });
+                        };
 
                     console.log('State after addTodo change',this.state);
                     }
-                    return;
+                    break;
                 case "deleteTodo":
-                    console.log("event.target.id => ",event.target);
-
                     const newTodo = this.state.todos.filter( (item, index)=>{if(item.id != itemIndex){ console.log("item.id =>",item.id);  return item;} });
-                    console.log("newTodo => ",newTodo);
-                    this.setState({
+                    newState = {
                         ...this.state, todos:newTodo
-                    });
-                    console.log('State after deleteTodo change',this.state);
-                    return;
+                    };
+                    break;
                 case "newTodo":
-                    this.setState({
+                    newState = {
                         ...this.state, newTodo:value
+                    };
+                    break;
+                case "cancel":
+                    console.log("cancel", this.state.initialState);
+                    this.setState({
+                        ...this.state.initialState
                     });
-                    console.log('State after addTodo change',this.state);
+                    return;
+                case "delete":
+                    var itemsDelete = [];
+                    console.log("cancel", this.state.initialState);
+                    itemsDelete = JSON.parse(window.localStorage.getItem("TripList"));
+                    console.log("itemsDelete => ", itemsDelete);
+                    const newListDelete = itemsDelete && itemsDelete.length > 0? itemsDelete.filter((item)=>{ if(item.id !== this.state.selectedTripId) return item }):[];
+                    this.setState({
+                        ...this.state.initialState
+                    });
+                    console.log("newList => ", newListDelete);
+                    window.localStorage.setItem("TripList", JSON.stringify(newListDelete));
+                    return;
+                 case "save":
+                    var items = [];
+                    items = JSON.parse(window.localStorage.getItem("TripList"));
+                    console.log("items => ", items);
+                    const newList = items && items.length > 0? items:[];
+                    newList.push({
+                        id: newList.length > 0? newList[newList.length-1].id+1 : 0,
+                        title : this.state.title,
+                        destination: this.state.destination,
+                        category: this.state.category,
+                        startDate: this.state.startDate,
+                        endDate: this.state.endDate,
+                        todos: this.state.todos,
+                        isReminderSet: this.state.isReminderSet,
+                        reminderTime: this.state.reminderTime
+                    });
+                    console.log("newList => ", newList);
+                    window.localStorage.setItem("TripList", JSON.stringify(newList));
+                    this.setState({
+                        ...this.state.initialState
+                    });
+                    return;
+                default:
+                    return;
             }
-            
+            if(newState)
+            validate(newState);
         };
 
         return(
@@ -134,7 +205,9 @@ class form extends Component {
                             <TextField  id="outlined-basic" 
                                         className={classes.formStyle} 
                                         placeholder="Title" 
-                                        variant="outlined" />
+                                        variant="outlined" 
+                                        value={this.state.title||''}
+                                        onChange={(event) => handleChange("title", event)}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -145,7 +218,9 @@ class form extends Component {
                             <TextField id="outlined-basic" 
                                         className={classes.formStyle}  
                                         placeholder="Destination" 
-                                        variant="outlined" />
+                                        variant="outlined" 
+                                        value={this.state.destination || ''}
+                                        onChange={(event) => handleChange("destination", event)}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={3}>
@@ -156,8 +231,7 @@ class form extends Component {
                         <FormControl variant="outlined" style={{width: '100%', textAlign:'left', alignContent:'left'}}>
                             <Select id="demo-simple-select-outlined"
                                     value={this.state.category}
-                                    onChange={(event) => handleChange("category", event)}
-                                    InputProps={{inputProps:{alignContent:'left'}}}>
+                                    onChange={(event) => handleChange("category", event)}>
                             <MenuItem value={0}>
                                 None
                             </MenuItem>
@@ -178,6 +252,7 @@ class form extends Component {
                                         variant="outlined" 
                                         type="date"
                                         defaultValue={this.state.todayDate}
+                                        value={this.state.startDate}
                                         InputProps={{inputProps: { min: this.state.todayDate} }}
                                         onChange={(event) => handleChange("startDate", event)}/>
                         </Grid>
@@ -241,7 +316,7 @@ class form extends Component {
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
                                     onChange={(event) => handleChange("newTodo", event)}
-                                    value={this.state.newTodo}/>
+                                    value={this.state.newTodo || ''}/>
                         </Grid>
                         <Grid item xs={4}>
                             <Button style={{height: '100%', width: '100%'}}
@@ -265,7 +340,8 @@ class form extends Component {
                                 variant="contained"
                                 color="secondary"
                                 className={classes.button}
-                                startIcon={<AddAlertIcon />}>
+                                startIcon={<AddAlertIcon />}
+                                onClick={(event) => handleChange("setReminder", event)}>
                                 Set Reminder
                             </Button>
                         </Grid>
@@ -284,7 +360,9 @@ class form extends Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.button}
-                                startIcon={<SaveIcon />}>
+                                startIcon={<SaveIcon />}
+                                onClick={(event) => handleChange("save", event)}
+                                disabled={!this.state.isSaveEnabled}>
                                 Save
                             </Button>
                         </Grid>
@@ -294,7 +372,8 @@ class form extends Component {
                                 variant="contained"
                                 color="default"
                                 className={classes.button}
-                                startIcon={<CancelIcon />}>
+                                startIcon={<CancelIcon />}
+                                onClick={(event) => handleChange("cancel", event)}>
                                 Cancel
                             </Button>
                         </Grid>
@@ -305,7 +384,9 @@ class form extends Component {
                                 variant="contained"
                                 color="secondary"
                                 className={classes.button}
-                                startIcon={<DeleteIcon />}>
+                                startIcon={<DeleteIcon />}
+                                onClick={(event) => handleChange("delete", event)}
+                                disabled={!this.state.isEdit}>
                                 Delete
                             </Button>
                         </Grid>
@@ -318,8 +399,7 @@ class form extends Component {
 }
 
 form.propTypes = {
-    classes: PropTypes.object.isRequired,
-    theme:PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(form);
