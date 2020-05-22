@@ -10,12 +10,28 @@ import {
     SAVETRIPCANCEL
   } from '../constants/ActionTypes'
 
+/**
+  * The action for filtering the Trip list based on category
+  * @param {*} category 
+*/
 export const FilterOption = category => ({ type: FILTERCATEGORY, category});
 
+/**
+ * The Action to Select a particular trip from the list and show it on the details screen
+ * @param {*} selectedTrip 
+ * @param {*} id 
+ */
 export const TripSelected = (selectedTrip, id) => ({ type: SELECTEDTRIP, selectedTrip,id});
 
+/**
+ * The Action for the search option in the filter panel
+ */
 export const SearchText = text => ({ type: SEARCHTEXT, text});
 
+/**
+ * 
+ * @param {*} isNewTrip 
+ */
 export const AddNewTrip = isNewTrip => ({ type: ADDNEWTRIP, isNewTrip});
 
 export const SaveTrip = (tripList,tripListWithReminder) => ({ type: SAVETRIP, tripList,tripListWithReminder});

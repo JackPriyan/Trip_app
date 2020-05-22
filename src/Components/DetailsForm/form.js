@@ -259,9 +259,13 @@ class form extends Component {
                     var items = [];
                     items = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("items => ", items);
-                    const newList = items && items.length > 0? this.state.id >= 0? items.filter((item)=>{ if(item.id !== this.state.id) return item }) : items:[];
+                    const isEdit = this.state.id != null && this.state.id != undefined ? this.state.id >= 0 ? true : false :false;
+                    const isEmptyArray = !items || items.length < 1;
+                    const initialItems = isEdit ? items.filter((item)=>{ if(item.id !== this.state.id) return item }) : items;
+                    const newList =  ! isEmptyArray?initialItems:[];
+                    const itemId = newList.length > 0 ? newList[newList.length-1].id+1 : 0;
                     newList.push({
-                        id: this.state.id >= 0 ? this.state.id : newList.length > 0? newList[newList.length-1].id+1 : 0,
+                        id: isEdit ? this.state.id : itemId,
                         title : this.state.title,
                         destination: this.state.destination,
                         category: this.state.category,
