@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ef67b14af286cd86445dea3d463baef3",
+    "revision": "5dd4a7bcce442e5019b09e53a3e58891",
     "url": "/Trip_app/index.html"
   },
   {
-    "revision": "cd22ce6c68880bc43c44",
+    "revision": "a44bce39bdb5985bf882",
     "url": "/Trip_app/static/css/main.5f361e03.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Trip_app/static/js/2.f42a383b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "cd22ce6c68880bc43c44",
-    "url": "/Trip_app/static/js/main.985835c6.chunk.js"
+    "revision": "a44bce39bdb5985bf882",
+    "url": "/Trip_app/static/js/main.721fe649.chunk.js"
   },
   {
     "revision": "425e91d7d3d160ca067a",
