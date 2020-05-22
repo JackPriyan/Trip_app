@@ -18,6 +18,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux'
 import {SaveTrip, DeleteTrip,SaveTripCancel} from '../../actions/action'
 import AlertDialog from '../../Components/Dialog/dialog'
+import {SETREMINDER, OPENREMINDER, TITLE,
+        STARTDATE, ENDDATE,CATEGORY,ADDTODO,DELETETODO,CHECKTODO,
+        UPDATETODOTEXT, NEWTODO, CANCEL, DELETE,SAVE, DESTINATION, } from '../../constants/constants'
 const theme = createMuiTheme({
     palette: {
       primary: green,
@@ -163,39 +166,39 @@ class form extends Component {
             const value = event ? event.target ? event.target.value : 0: 0 ; 
             var newState;
             switch(name){
-                case "setReminder":
+                case SETREMINDER:
                     newState = {
                         ...this.state, isReminderSet : !this.state.isReminderSet};
                     break;
-                case "openReminder":
+                case OPENREMINDER:
                     console.log("openReminder => ",event);
                     newState = {
                         ...this.state, reminderTime: event , isReminderClicked: !this.state.isReminderClicked, isReminderSet : true};
                     break;
-                case "title":
+                case TITLE:
                     newState = {
                         ...this.state, title: value};
                     break;
-                case "destination":
+                case DESTINATION:
                     newState = {
                         ...this.state, destination: value};
                     break;
-                case "startDate":
+                case STARTDATE:
                     newState = {
                         ...this.state, startDate: value, endDate : value
                     };
                     break;
-                case "endDate":
+                case ENDDATE:
                     newState = {
                         ...this.state, endDate : value
                     };
                     break;
-                case "category":
+                case CATEGORY:
                     newState = {
                         ...this.state, category : value
                     };
                     break;
-                case "addTodo":
+                case ADDTODO:
                     if(this.state.newTodo.trim()){
                         //Sets the todo id by incrementing the id of last todo item if todo is not empty else id = 0
                         newState = {
@@ -205,38 +208,38 @@ class form extends Component {
                     console.log('State after addTodo change',this.state);
                     }
                     break;
-                case "deleteTodo":
+                case DELETETODO:
                     //Removing the selected todo from todo array by id
                     const newTodo = this.state.todos.filter( (item, index)=>{if(item.id != itemIndex){ console.log("item.id =>",item.id);  return item;} });
                     newState = {
                         ...this.state, todos:newTodo
                     };
                     break;
-                case "checkToDo":
+                case CHECKTODO:
                     const checkTodo = this.state.todos.filter( (item, index)=>{if(item.id == itemIndex){ console.log("item.id =>",item.id); item.isDone = !item.isDone; } return item; });
                     newState = {
                         ...this.state, todos:checkTodo
                     };
                     break;
-                case "updateToDoText":
+                case UPDATETODOTEXT:
                     const updateTodo = this.state.todos.filter( (item, index)=>{if(item.id == itemIndex){ console.log("item.id =>",item.id); item.text = value; } return item; });
                     newState = {
                         ...this.state, todos:updateTodo
                     };
                         break;
-                case "newTodo":
+                case NEWTODO:
                     newState = {
                         ...this.state, newTodo:value
                     };
                     break;
-                case "cancel":
+                case CANCEL:
                     console.log("cancel", this.state.initialState);
                     this.setState({
                         ...this.state.initialState
                     });
                     this.props.onTripSaveCancel();
                     return;
-                case "delete":
+                case DELETE:
                     var itemsDelete = [];
                     console.log("cancel", this.state.initialState);
                     itemsDelete = JSON.parse(window.localStorage.getItem("TripList"));
@@ -255,7 +258,7 @@ class form extends Component {
                     console.log("newList => ", newListDelete);
                     window.localStorage.setItem("TripList", JSON.stringify(newListDelete));
                     return;
-                 case "save":
+                 case SAVE:
                     var items = [];
                     items = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("items => ", items);
@@ -311,7 +314,7 @@ class form extends Component {
                                         placeholder="Title" 
                                         variant="outlined" 
                                         value={this.state.title||''}
-                                        onChange={(event) => handleChange("title", event)}
+                                        onChange={(event) => handleChange(TITLE, event)}
                                         style={{width:'100%'}}
                                         margin="dense"/>
                         </Grid>
@@ -326,7 +329,7 @@ class form extends Component {
                                         placeholder="Destination" 
                                         variant="outlined" 
                                         value={this.state.destination || ''}
-                                        onChange={(event) => handleChange("destination", event)}
+                                        onChange={(event) => handleChange(DESTINATION, event)}
                                         style={{width:'100%'}}
                                         margin="dense"/>
                         </Grid>
@@ -339,7 +342,7 @@ class form extends Component {
                         <FormControl variant="outlined" style={{width: '100%', textAlign:'left', alignContent:'left'}}>
                             <Select id="demo-simple-select-outlined"
                                     value={this.state.category}
-                                    onChange={(event) => handleChange("category", event)}
+                                    onChange={(event) => handleChange(CATEGORY, event)}
                                     margin="dense">
                             <MenuItem value={0}>
                                 None
@@ -362,7 +365,7 @@ class form extends Component {
                                         type="date"
                                         value={this.state.startDate}
                                         InputProps={{inputProps: { min: this.state.todayDate} }}
-                                        onChange={(event) => handleChange("startDate", event)}
+                                        onChange={(event) => handleChange(STARTDATE, event)}
                                         margin="dense"/>
                         </Grid>
                     </Grid>
@@ -379,7 +382,7 @@ class form extends Component {
                                         type="date"
                                         value={this.state.endDate}
                                         InputProps={{inputProps: { min: this.state.startDate} }}
-                                        onChange={(event) => handleChange("endDate", event)}
+                                        onChange={(event) => handleChange(ENDDATE, event)}
                                         margin="dense"/>
                         </Grid>
                     </Grid>
@@ -398,7 +401,7 @@ class form extends Component {
                         <Grid item xs={1}>
                             <Checkbox name={"Check"+index} color="primary"
                                         checked={item.isDone}
-                                        onChange={(event) => handleChange("checkToDo", event, item.id)}/>
+                                        onChange={(event) => handleChange(CHECKTODO, event, item.id)}/>
                         </Grid>
                         <Grid item xs={7}>
                             <TextField id={"todoItem-text"+index} 
@@ -407,7 +410,7 @@ class form extends Component {
                                         variant="outlined" 
                                         value={item.text || ''}
                                         margin="dense"
-                                        onChange={(event) => handleChange("updateToDoText", event, item.id)}/>
+                                        onChange={(event) => handleChange(UPDATETODOTEXT, event, item.id)}/>
                         </Grid>
                         <Grid item xs={4}>
                         <div style={{ paddingTop:'8px'}}>
@@ -418,7 +421,7 @@ class form extends Component {
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
-                                    onClick={(event) => handleChange("deleteTodo", event, item.id)}>
+                                    onClick={(event) => handleChange(DELETETODO, event, item.id)}>
                                     Delete 
                                 </Button>
                             </div>
@@ -436,7 +439,7 @@ class form extends Component {
                                         placeholder="ToDo Item" 
                                         variant="outlined" 
                                         margin="dense"
-                                    onChange={(event) => handleChange("newTodo", event)}
+                                    onChange={(event) => handleChange(NEWTODO, event)}
                                     value={this.state.newTodo || ''}/>
                         </Grid>
                         <Grid item xs={4} style={{width:'100%'}}>
@@ -447,7 +450,7 @@ class form extends Component {
                                     color="primary"
                                     className={classes.button}
                                     startIcon={<AddIcon />}
-                                    onClick={(event) => handleChange("addTodo", event)}
+                                    onClick={(event) => handleChange(ADDTODO, event)}
                                     margin="dense">
                                     Add 
                                 </Button>
@@ -457,13 +460,13 @@ class form extends Component {
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
                         <AlertDialog isOpen={this.state.isReminderClicked} 
-                                        onClose={(event) => handleChange("openReminder", event)}
+                                        onClose={(event) => handleChange(OPENREMINDER, event)}
                                         minDate={this.state.reminderTime}
                                         selectedDate={this.state.reminderTime}
                                         isSnooze={false}/>
                         <Checkbox   name={"Check"}
                                     checked={this.state.isReminderSet}
-                                    onChange={(event) => handleChange("setReminder", event)}></Checkbox>
+                                    onChange={(event) => handleChange(SETREMINDER, event)}></Checkbox>
                         </Grid>
                         <Grid item xs={6}>
                             <Button
@@ -472,7 +475,7 @@ class form extends Component {
                                 color="secondary"
                                 className={classes.button}
                                 startIcon={<AddAlertIcon />}
-                                onClick={(event) => handleChange("openReminder", event)}>
+                                onClick={(event) => handleChange(OPENREMINDER, event)}>
                                 Set Reminder
                             </Button>
                         </Grid>
@@ -492,7 +495,7 @@ class form extends Component {
                                 color="primary"
                                 className={classes.button}
                                 startIcon={<SaveIcon />}
-                                onClick={(event) => handleChange("save", event)}
+                                onClick={(event) => handleChange(SAVE, event)}
                                 disabled={!this.state.isSaveEnabled}>
                                 Save
                             </Button>
@@ -504,7 +507,7 @@ class form extends Component {
                                 color="default"
                                 className={classes.button}
                                 startIcon={<CancelIcon />}
-                                onClick={(event) => handleChange("cancel", event)}>
+                                onClick={(event) => handleChange(CANCEL, event)}>
                                 Cancel
                             </Button>
                         </Grid>
@@ -516,7 +519,7 @@ class form extends Component {
                                 color="secondary"
                                 className={classes.button}
                                 startIcon={<DeleteIcon />}
-                                onClick={(event) => handleChange("delete", event)}
+                                onClick={(event) => handleChange(DELETE, event)}
                                 disabled={!this.state.isEdit}>
                                 Delete
                             </Button>

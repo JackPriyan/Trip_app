@@ -1,3 +1,7 @@
+/**
+ * These are the constants that we are using for Actions
+ */
+
 export const FILTERCATEGORY = 'FILTERCATEGORY'
 export const SELECTEDTRIP = 'SELECTEDTRIP'
 export const SEARCHTEXT = 'SEARCHTEXT'

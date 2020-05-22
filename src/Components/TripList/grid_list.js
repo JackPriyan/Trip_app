@@ -1,3 +1,7 @@
+/**
+ * Below is the Trip Grid List Code
+ * 
+ */
 import React, {Component} from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,7 +18,13 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import AlertDialog from '../../Components/Dialog/snoozeDialog'
 import moment from 'moment'
-
+import {ROWSELECTED,
+        ITEMSTATUS ,
+        OPENREMINDER, 
+        ITEMTYPE, 
+        GOTODETAILS, 
+        SNOOZE,
+        TABLEHEADERS} from '../../constants/constants'
 class grid_list extends Component {
 
     constructor(props){
@@ -28,6 +38,10 @@ class grid_list extends Component {
         console.log("get List this.state => ",this.state)
     }
 
+    /**
+     * Below is the to update state on props changes
+     * 
+     */
     componentWillReceiveProps(nextProps) {
         if(nextProps.selectedTrip === null || nextProps.selectedTrip === -1)
         {
@@ -35,6 +49,10 @@ class grid_list extends Component {
         }
     }
 
+    /**
+     * Below code is for the Reminder alearting system with Clock function
+     * 
+     */
     componentDidMount(){
         this.clock = setInterval(
           () => this.checkReminderClock(),
@@ -43,18 +61,25 @@ class grid_list extends Component {
       }
 
       checkReminderClock(){
+          /**
+           * Only called when the Modal is Close state
+           */
         if(this.state.isModalOpen===false){
+
+            //Checking the remindersList from props to compute the time to trigger
             const item  = this.props.tripListWithReminder.find((item) => {
                 const reminderDate = new Date(item.reminderTime).getTime();
                 const currentTime = new Date().getTime();
                 console.log("tripListWithReminder => ",currentTime/1000 - reminderDate/1000)
                 const difference = currentTime/1000 - reminderDate/1000;
+
+                //When the difference becomes more than 0 the the reminder alert is triggered
                 if(difference>0) {
                 return item
                 } 
             });
-            // alert("its time!");
             if(item){
+                //Setting the snoozeItem details for the Modal window and to open the Modal
                 console.log("Snooze Item Again",item);
                 this.setState({...this.state, snoozeItem : item, isModalOpen : true});
             }
@@ -63,23 +88,30 @@ class grid_list extends Component {
 
 
     render(){
-        const headers = ["","Title", "Destination", "Duration", "Category", "Reminder set", "Items Needed", "Trip Planning State"];
+
+        //The Headers for the table
         
+        /**
+         * This is the handler function for the State changes from Form and other UI elements
+         * @param {Name of the event} name 
+         * @param {Even details from the target} event 
+         * @param {The Event target index in case of an list} itemIndex 
+         */
         const handleChange = (name, event, itemIndex = 0) => {
             var newState;
             switch(name){
                 
-                case "rowSelected":
+                case ROWSELECTED:
                     newState = {
                         ...this.state, itemSelected: this.state.itemSelected === itemIndex ? -1 : itemIndex };
                     this.props.onTripSelected(this.state.itemSelected === itemIndex ? -1 : itemIndex, this.props.items[itemIndex].id);
                     break;
-                case "openReminder":
+                case OPENREMINDER:
                     console.log("openReminder => ",event);
                     newState = {
                         ...this.state, isModalOpen : !this.state.isModalOpen};
                     break;
-                case "gotoDetails" :
+                case GOTODETAILS :
                         console.log("gotoDetails => ");
                         newState = {
                             ...this.state, isModalOpen : !this.state.isModalOpen };
@@ -112,7 +144,7 @@ class grid_list extends Component {
                                     ...newState
                                 });    
                         break;
-                case "snooze":
+                case SNOOZE:
                    
                     console.log("snooze => ",event);
                     //Default close snoozes for 1 min
@@ -182,15 +214,12 @@ class grid_list extends Component {
                 return 0;
         }
 
-        const itemStatus = ["Created", "In Progress", "Ready"]
-        const itemType = ["","Business", "Vacation"]
-
         return(
                   <TableContainer component={Paper} style={{height:'100%'}}>
                     <Table aria-label="simple table" size="small" style={{ width: "auto", tableLayout: "auto" }}>
                         <TableHead style={{height:'100%', backgroundColor: '#3f51b5', color: 'white'}}>
                         <TableRow  scope="row">
-                        {headers.map((header, index)=>
+                        {TABLEHEADERS.map((header, index)=>
                             <TableCell key={index} align="right" style={{color: 'white'}}>{header}</TableCell>
                         )
                         }
@@ -201,21 +230,21 @@ class grid_list extends Component {
                             this.props.items.map((item, index)=>
                             <TableRow key={index} 
                                         selected={index === this.props.selectedTrip}
-                                        onClick={(event) => handleChange("rowSelected", event, index)}
+                                        onClick={(event) => handleChange(ROWSELECTED, event, index)}
                                         scope="row">
                                 <TableCell >
                                     <Checkbox
                                         checked={index === this.props.selectedTrip}
-                                        onChange={(event) => handleChange("rowSelected", event, index)}
+                                        onChange={(event) => handleChange(ROWSELECTED, event, index)}
                                     />
                                 </TableCell>
                                 <TableCell align="right">{item.title}</TableCell>
                                 <TableCell align="right">{item.destination}</TableCell>
                                 <TableCell align="right">{item.duration+(item.duration > 1? " Days": " Day" )}</TableCell>
-                                <TableCell align="right">{itemType[item.category]}</TableCell>
+                                <TableCell align="right">{ITEMTYPE[item.category]}</TableCell>
                                 <TableCell align="right">{item.isReminderSet?<NotificationsActiveIcon/>:<NotificationsOffIcon/>}</TableCell>
                                 <TableCell align="right">{checkDoneStatus(item.todos) === 2 ?"Done":"Yes"}</TableCell>
-                                <TableCell align="right">{itemStatus[checkDoneStatus(item.todos)]}</TableCell>
+                                <TableCell align="right">{ITEMSTATUS[checkDoneStatus(item.todos)]}</TableCell>
                             </TableRow>
                             )
                         }

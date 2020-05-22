@@ -1,3 +1,7 @@
+/**
+ * Below is the Filter Panel Code
+ * 
+ */
 import React, {Component} from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -10,7 +14,7 @@ import MenuList from '@material-ui/core/MenuList';
 import Box from '@material-ui/core/Box';
 import {FilterOption, SearchText, AddNewTrip} from '../../actions/action'
 import { connect } from 'react-redux'
-
+import {SEARCH, SEARCHTEXT, MENUCHANGE, ADDTODO, MENUOPTIONS }  from '../../constants/constants'
 
 class filter extends Component {
 
@@ -25,25 +29,24 @@ class filter extends Component {
     }
 
     render(){
-        const itemType = ["All","Business", "Vacation"]
 
         const handleChange = (name, event, itemIndex = 0) => {
             const value = event.target.value; 
             var newState;
             switch(name){
-                case "searchText":
+                case SEARCHTEXT:
                     newState = {
                         ...this.state, searchText: value};
                     break;
-                case "search":
+                case SEARCH:
                     newState = {
                         ...this.state, search: value};
                     this.props.onSearchChange(this.state.searchText);
                     break;
-                case "addTodo":
+                case ADDTODO:
                     this.props.onAddNewTripClick();
                     break;
-                case "menuChange":
+                case MENUCHANGE:
                     newState = {
                         ...this.state, categorySelected: itemIndex};
                     this.props.onMenuChange(itemIndex);
@@ -70,7 +73,7 @@ class filter extends Component {
                         <Button     size="large"
                                     variant="contained"
                                     color="primary"
-                                    onClick={(event) => handleChange("search", event)}
+                                    onClick={(event) => handleChange(SEARCH, event)}
                                     style={{width:'25px', margin:'auto', paddingLeft:'0px',paddingRight:'0px'}}>
                                         <SearchIcon/>
                          </Button>
@@ -85,16 +88,16 @@ class filter extends Component {
                                     variant="contained"
                                     color="primary"
                                     startIcon={<AddIcon />}
-                                    onClick={(event) => handleChange("addTodo", event)}>
+                                    onClick={(event) => handleChange(ADDTODO, event)}>
                                     Add A Trip
                                 </Button>
                 </Box>
                 </Grid>
                 <MenuList>
-                {itemType.map((item, index) => 
+                {MENUOPTIONS.map((item, index) => 
                     <MenuItem key={"menu"+index} 
                                 selected={index === this.state.categorySelected}
-                                onClick={(event) => handleChange("menuChange", event, index)}>{item}</MenuItem>)}
+                                onClick={(event) => handleChange(MENUCHANGE, event, index)}>{item}</MenuItem>)}
                 </MenuList>
                 
             </Paper>
