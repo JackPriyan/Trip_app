@@ -9,14 +9,27 @@ import TextField from '@material-ui/core/TextField';
 
 export default function AlertDialog({isOpen, onClose, minDate }) {
   const [open, setOpen] = React.useState(isOpen);
+  const [selectDateTime, setDateTime] = React.useState(minDate);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    onClose();
+    onClose(selectDateTime);
   };
+  const handleChange = (name, event, itemIndex = 0) => {
+    const value  = event.target.value;
+    switch (name){
+        case "setReminder":
+            setDateTime (value);
+            break;
+        default:
+            return;
+    }
+    return;
+  }
+
 
   return (
     <div>
@@ -34,10 +47,13 @@ export default function AlertDialog({isOpen, onClose, minDate }) {
                         label="Set Reminder"
                         type="datetime-local"
                         defaultValue={minDate}
+                        value={selectDateTime}
+                        variant="outlined" 
                         InputLabelProps={{
                         shrink: true
                         }}
                         InputProps={{inputProps: { min: minDate} }}
+                        onChange={(event) => handleChange("setReminder", event)}
                     />
           </DialogContentText>
         </DialogContent>

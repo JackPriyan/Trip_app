@@ -24,7 +24,7 @@ const Trips = (state = initialState, action) => {
             break;
         case SEARCHTEXT:
             console.log("SEARCHTEXT triggered => ", action.text);
-            return {...state};
+            return {...state, searchText : action.text};
             break;
         
         case SELECTEDTRIP:

@@ -103,20 +103,33 @@ class grid_list extends Component {
     }
 }
 
-const getFilteredList = (items, category) => {
+const getFilteredList = (items, category, searchText) => {
     console.log("getFilteredList items =>",items );
     console.log("getFilteredList category =>",category );
 
-    switch (category) {
-      case 0:
-        return items
-      case 1:
-      case 2:
-          const filteredItem = items.filter(t => {return t.category === category});
-          console.log("items Filtered", filteredItem);
-        return items.filter(t => {return t.category === category})
-      default:
-        return items;
+    if(!searchText){
+            switch (category) {
+            case 0:
+                return items
+            case 1:
+            case 2:
+                const filteredItem = items.filter(t => {return t.category === category});
+                console.log("items Filtered", filteredItem);
+                return items.filter(t => {return t.category === category})
+            default:
+                return items;
+        }
+    }
+    else{
+        console.log("TExt chanegd => ",searchText);
+        const filteredItem = items.filter((item) => {
+            const Data = JSON.stringify(item.todos);
+            if(item.title.includes(searchText) || Data.includes(searchText) || item.destination.includes(searchText)){
+                return item;
+            }  
+        });
+
+        return filteredItem;
     }
     return items;
 
@@ -125,7 +138,7 @@ const getFilteredList = (items, category) => {
 const mapStateToProps = (state) => ({
     filterSelected: state.filterSelected,
     selectedTrip: state.selectedTrip,
-    items: getFilteredList(state.items,state.filterSelected)
+    items: getFilteredList(state.items,state.filterSelected, state.searchText)
   })
   
   const mapDispatchToProps = (dispatch) => ({

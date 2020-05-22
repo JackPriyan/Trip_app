@@ -73,7 +73,7 @@ class form extends Component {
                                 destination: '',
                                 newTodo: '',
                                 isReminderSet:false,
-                                reminderTime:'',
+                                reminderTime:todayDateTime,
                                 selectedTripId: null,
                                 id:null,
                                 isReminderClicked:false};
@@ -154,8 +154,9 @@ class form extends Component {
                         ...this.state, isReminderSet : !this.state.isReminderSet};
                     break;
                 case "openReminder":
+                    console.log("openReminder => ",event);
                     newState = {
-                        ...this.state, isReminderClicked: !this.state.isReminderClicked, isReminderSet : !this.state.isReminderSet};
+                        ...this.state, reminderTime: event , isReminderClicked: !this.state.isReminderClicked, isReminderSet : true};
                     break;
                 case "title":
                     newState = {
@@ -432,9 +433,11 @@ class form extends Component {
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
                         <AlertDialog isOpen={this.state.isReminderClicked} 
-                                        onClose={(event) => handleChange("setReminder", event)}
-                                        minDate={this.state.todayDateTime}/>
+                                        onClose={(event) => handleChange("openReminder", event)}
+                                        minDate={this.state.todayDateTime}
+                                        selectedDate={this.state.reminderTime}/>
                         <Checkbox   name={"Check"}
+                                    checked={this.state.isReminderSet}
                                     onChange={(event) => handleChange("setReminder", event)}></Checkbox>
                         </Grid>
                         <Grid item xs={6}>
