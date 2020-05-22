@@ -25,7 +25,11 @@ export default function AlertDialog({isOpen, onClose, SnaoozeItem }) {
   const handleClose = (name) => {
     
     //Logic for Snooze
-    onClose(selectSnooze);
+    if(name === "goto"){
+        onClose("gotoDetails",null);
+    }
+    else
+        onClose("snooze", selectSnooze);
   };
   const handleChange = (name, event, itemIndex = 0) => {
     const value  = event.target.value;
@@ -124,6 +128,9 @@ export default function AlertDialog({isOpen, onClose, SnaoozeItem }) {
         <DialogActions>
           <Button onClick={()=>handleClose("save")} disabled={selectSnooze === 0} color="primary">
             Save
+          </Button>
+          <Button onClick={()=>handleClose("goto")} color="primary">
+            Goto Details
           </Button>
           <Button onClick={()=>handleClose("close")} color="secondary" autoFocus>
             Close

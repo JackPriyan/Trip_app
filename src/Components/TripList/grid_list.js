@@ -55,7 +55,7 @@ class grid_list extends Component {
             });
             // alert("its time!");
             if(item){
-                console.log("Snooze Item",item);
+                console.log("Snooze Item Again",item);
                 this.setState({...this.state, snoozeItem : item, isModalOpen : true});
             }
         }
@@ -68,6 +68,7 @@ class grid_list extends Component {
         const handleChange = (name, event, itemIndex = 0) => {
             var newState;
             switch(name){
+                
                 case "rowSelected":
                     newState = {
                         ...this.state, itemSelected: this.state.itemSelected === itemIndex ? -1 : itemIndex };
@@ -78,12 +79,41 @@ class grid_list extends Component {
                     newState = {
                         ...this.state, isModalOpen : !this.state.isModalOpen};
                     break;
+                case "gotoDetails" :
+                        console.log("gotoDetails => ");
+                        newState = {
+                            ...this.state, isModalOpen : !this.state.isModalOpen };
+                        const index = this.props.items.findIndex(i => i.id === this.state.snoozeItem.id);
+                        console.log("snooze => ",event);
+                        //Default close snoozes for 1 min
+                        var snoozeSeconds = 60000 ;
+                            var items = [];
+                            //items = JSON.parse(window.localStorage.getItem("TripList"));
+                            console.log("items => ", items);
+                            const nextReminderTime = new Date().getTime()+snoozeSeconds;
+                            const nextReminderDateTime = moment(nextReminderTime).format("YYYY-MM-DD[T]HH:mm");
+    
+                            const newListGoto =  this.props.items.filter((item)=>{ 
+                                if(item.id === this.state.snoozeItem.id) item.reminderTime = nextReminderDateTime; return item; 
+                            });
+                            
+                            window.localStorage.setItem("TripList", JSON.stringify(newListGoto));
+                            
+                            const tripListWithReminderGoto = newListGoto.filter((item) => {
+                                if(item.isReminderSet)
+                                  return {id: item.id, dateTime : item.reminderTime }
+                              });
+                              console.log("newListGoto => ", newListGoto);
+                              console.log("tripListWithReminder => ", tripListWithReminderGoto);
+                              this.props.onTripSelected(index, this.state.snoozeItem.id);
+
+                             //this.props.onTripSave(this.props.items, this.props.tripListWithReminder);
+                             this.setState({
+                                    ...newState
+                                });    
+                        break;
                 case "snooze":
-                    newState = {
-                        ...this.state, isModalOpen : !this.state.isModalOpen};
-                        this.setState({
-                            ...newState
-                        });
+                   
                     console.log("snooze => ",event);
                     //Default close snoozes for 1 min
                     var snoozeSeconds = 1000 ;
@@ -94,33 +124,43 @@ class grid_list extends Component {
                         var items = [];
                         //items = JSON.parse(window.localStorage.getItem("TripList"));
                         console.log("items => ", items);
-                        const newList =  this.props.items.filter((item)=>{ if(item.id !== this.state.snoozeItem.id) return item });
                         const reminderTime = new Date().getTime()+snoozeSeconds;
                         const reminderDateTime = moment(reminderTime).format("YYYY-MM-DD[T]HH:mm");
 
-                        newList.push({
-                            id: this.state.snoozeItem.id,
-                            title : this.state.snoozeItem.title,
-                            destination: this.state.snoozeItem.destination,
-                            category: this.state.snoozeItem.category,
-                            startDate: this.state.snoozeItem.startDate,
-                            endDate: this.state.snoozeItem.endDate,
-                            todos: this.state.snoozeItem.todos,
-                            isReminderSet: this.state.snoozeItem.isReminderSet,
-                            reminderTime: reminderDateTime,
-                            state: this.state.snoozeItem.state,
-                            duration: this.state.snoozeItem.duration
-                            
+                        const newList =  this.props.items.filter((item)=>{ 
+                            if(item.id === this.state.snoozeItem.id) item.reminderTime = reminderDateTime; return item; 
                         });
-                        console.log("newList => ", newList);
+                        
+
+                        // newList.push({
+                        //     id: this.state.snoozeItem.id,
+                        //     title : this.state.snoozeItem.title,
+                        //     destination: this.state.snoozeItem.destination,
+                        //     category: this.state.snoozeItem.category,
+                        //     startDate: this.state.snoozeItem.startDate,
+                        //     endDate: this.state.snoozeItem.endDate,
+                        //     todos: this.state.snoozeItem.todos,
+                        //     isReminderSet: this.state.snoozeItem.isReminderSet,
+                        //     reminderTime: reminderDateTime,
+                        //     state: this.state.snoozeItem.state,
+                        //     duration: this.state.snoozeItem.duration
+                            
+                        // });
                         window.localStorage.setItem("TripList", JSON.stringify(newList));
                         
                         const tripListWithReminder = newList.filter((item) => {
                             if(item.isReminderSet)
                               return {id: item.id, dateTime : item.reminderTime }
                           });
-                         this.props.onTripSave(newList, tripListWithReminder);
-                        
+                          console.log("newList => ", newList);
+                          console.log("tripListWithReminder => ", tripListWithReminder);
+
+                         this.props.onTripSave(this.props.items, this.props.tripListWithReminder);
+                         newState = {
+                            ...this.state, isModalOpen : !this.state.isModalOpen, snoozeItem:null};
+                            this.setState({
+                                ...newState
+                            });
                         return;
 
             }
@@ -183,7 +223,7 @@ class grid_list extends Component {
                     </Table>
                     {console.log("snoozeItem => ",this.state.snoozeItem)}
                     <AlertDialog isOpen={this.state.isModalOpen} 
-                                 onClose={(event) => handleChange("snooze", event)}
+                                 onClose={(name, event) => handleChange(name, event)}
                                  SnaoozeItem={this.state.snoozeItem}/>
                     </TableContainer>
         );

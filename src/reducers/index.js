@@ -38,6 +38,8 @@ const Trips = (state = initialState, action) => {
         case SAVETRIP:
         case DELETETRIP:
             console.log("action.tripList delete => ", action.tripList)
+            console.log("tripListWithReminder => ", action.tripListWithReminder)
+
             return {...state, items: action.tripList,selectedTrip : -1, item: null, selectedTripId :-1, tripListWithReminder:action.tripListWithReminder};
         case SAVETRIPCANCEL:
         case ADDNEWTRIP:
