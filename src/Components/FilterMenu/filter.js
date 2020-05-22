@@ -4,13 +4,10 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import AddIcon from '@material-ui/icons/Add';
 import MenuList from '@material-ui/core/MenuList';
-import { spacing } from '@material-ui/system';
 import Box from '@material-ui/core/Box';
-import FormControl from '@material-ui/core/FormControl';
 import {FilterOption, SearchText, AddNewTrip} from '../../actions/action'
 import { connect } from 'react-redux'
 
@@ -95,7 +92,7 @@ class filter extends Component {
                 </Grid>
                 <MenuList>
                 {itemType.map((item, index) => 
-                    <MenuItem key={item} 
+                    <MenuItem key={"menu"+index} 
                                 selected={index === this.state.categorySelected}
                                 onClick={(event) => handleChange("menuChange", event, index)}>{item}</MenuItem>)}
                 </MenuList>

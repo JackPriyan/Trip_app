@@ -21,34 +21,29 @@ const Trips = (state = initialState, action) => {
             console.log("FILTERCATEGORY state => ", state);
 
             return {...state, filterSelected: action.category, selectedTrip : -1, selectedTripId : -1};
-            break;
         case SEARCHTEXT:
             console.log("SEARCHTEXT triggered => ", action.text);
-            return {...state, searchText : action.text};
-            break;
-        
+            return {...state, searchText : action.text};        
         case SELECTEDTRIP:
             console.log("SELECTEDTRIP triggered => ", action.selectedTrip);
             console.log("SELECTEDTRIP state => ", state);
             console.log("SELECTEDTRIP idSelected => ", action);
-            if(action.selectedTrip == -1)
+            if(action.selectedTrip === -1)
             return {...state, selectedTrip: action.selectedTrip, selectedTripId :null };
             else
             return {...state, selectedTrip: action.selectedTrip, selectedTripId :action.id};
-            break;
         case TRIPLIST:
+            console.log("action.tripList delete => ", action.tripList)
+            return {...state, items: action.tripList,selectedTrip : -1, item: null, selectedTripId :-1, tripListWithReminder:action.tripListWithReminder};
         case SAVETRIP:
         case DELETETRIP:
             console.log("action.tripList delete => ", action.tripList)
-            return {...state, items: action.tripList,selectedTrip : -1, item: null, selectedTripId :-1};
-            break;
+            return {...state, items: action.tripList,selectedTrip : -1, item: null, selectedTripId :-1, tripListWithReminder:action.tripListWithReminder};
         case SAVETRIPCANCEL:
         case ADDNEWTRIP:
             return {...state , selectedTrip : -1, selectedTripId : -1}
-            break;
         default:
             return state;
-            break;
         return state;
     }
   }

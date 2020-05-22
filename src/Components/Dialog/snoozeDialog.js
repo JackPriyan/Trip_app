@@ -5,7 +5,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { FormLabel } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
@@ -13,43 +12,24 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 
-export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false, snoozeItem }) {
-  const [selectDateTime, setDateTime] = React.useState(minDate);
-  const [items] = React.useState(snoozeItem);
+export default function AlertDialog({isOpen, onClose, SnaoozeItem }) {
+  const items = SnaoozeItem;
   const [selectSnooze, setSnooze] = React.useState(0);
-  const [isSnoozeModel] = React.useState(isSnooze);
 
-  console.log("AlertDialog 11=> ", snoozeItem);
+  console.log("AlertDialog 13=> ", items);
 
   const itemStatus = ["Created", "In Progress", "Ready"]
   const itemType = ["","Business", "Vacation"]
-  
+ 
+
   const handleClose = (name) => {
     
     //Logic for Snooze
-    if(isSnoozeModel){
-        if(selectSnooze>0)
-            onClose(selectSnooze);
-    }
-    //Logic for normal close
-    if(name === "close")
-        onClose(selectDateTime);
-
-    //Save DateTime in details form if its future date selected
-    else  if(! isSnoozeModel){
-        const reminderDate = new Date(selectDateTime).getTime();
-        const currentTime = new Date().getTime();
-        const difference = currentTime/1000 - reminderDate/1000;
-        if(difference<0 )
-            onClose(selectDateTime);
-    }
+    onClose(selectSnooze);
   };
   const handleChange = (name, event, itemIndex = 0) => {
     const value  = event.target.value;
     switch (name){
-        case "setReminder":
-            setDateTime (value);
-            break;
         case "snooze":
             setSnooze (value);
             break;
@@ -60,43 +40,15 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
   }
 
 
+  if(items)
   return (
-    <div>
       <Dialog
         open={isOpen}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        
-        {isSnoozeModel === false &&
-        <div>
-        <DialogTitle id="alert-dialog-title">{"Please set the Date Time below"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <div style={{margin:'10px', color:'red'}}>{ "Please Set Future Date & Time."}</div>
-          <TextField
-                        id="datetime-local"
-                        label="Set Reminder"
-                        type="datetime-local"
-                        defaultValue={minDate}
-                        value={selectDateTime}
-                        variant="outlined" 
-                        InputLabelProps={{
-                        shrink: true
-                        }}
-                        InputProps={{inputProps: { min: minDate} }}
-                        onChange={(event) => handleChange("setReminder", event)}
-                    />
-          </DialogContentText>
-        
-        </DialogContent>
-        </div>
-        }
-
-        {isSnoozeModel === true && items &&
-        <div>
-        <DialogTitle id="alert-dialog-title"> <NotificationsActiveIcon/>{" Reminder "}</DialogTitle>
+            <DialogTitle id="alert-dialog-title"> <NotificationsActiveIcon/>{" Reminder "}</DialogTitle>
         <DialogContent  style={{width:'20rem'}}>
           <DialogContentText id="alert-dialog-description">
                 <Grid container spacing={3}>
@@ -169,10 +121,8 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
           </DialogContentText>
         
         </DialogContent>
-        </div>
-        }
         <DialogActions>
-          <Button onClick={()=>handleClose("save")} disabled={isSnooze && selectSnooze === 0} color="primary">
+          <Button onClick={()=>handleClose("save")} disabled={selectSnooze === 0} color="primary">
             Save
           </Button>
           <Button onClick={()=>handleClose("close")} color="secondary" autoFocus>
@@ -180,6 +130,7 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
   );
+  else
+  return(<div></div>)
 }

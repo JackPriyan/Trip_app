@@ -18,16 +18,19 @@ export const SearchText = text => ({ type: SEARCHTEXT, text});
 
 export const AddNewTrip = isNewTrip => ({ type: ADDNEWTRIP, isNewTrip});
 
-export const SaveTrip = tripList => ({ type: SAVETRIP, tripList});
+export const SaveTrip = (tripList,tripListWithReminder) => ({ type: SAVETRIP, tripList,tripListWithReminder});
 
-export const DeleteTrip = (tripId,tripList) => ({ type: DELETETRIP, tripId, tripList});
+export const SaveRemiderTrips = tripList => ({ type: SAVETRIP, tripList});
+
+export const DeleteTrip = (tripId,tripList, tripListWithReminder) => ({ type: DELETETRIP, tripId, tripList, tripListWithReminder});
 
 export const SaveTripCancel = () => ({ type: SAVETRIPCANCEL});
 
 
-const getTripList = tripList => ({
+const getTripList = (tripList,tripListWithReminder) => ({
     type: TRIPLIST,
-    tripList
+    tripList,
+    tripListWithReminder
   })
 
 
@@ -36,6 +39,10 @@ export const getAllTrips = () => dispatch => {
     items = JSON.parse(window.localStorage.getItem(TRIPDB));
     console.log("get List items => ",items)
     const tripList = items?items:[];
-    dispatch(getTripList(tripList));
+    const tripListWithReminder = tripList.filter((item) => {
+      if(item.isReminderSet)
+        return {id: item.id, dateTime : item.reminderTime }
+    });
+    dispatch(getTripList(tripList, tripListWithReminder));
   }
 

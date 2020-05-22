@@ -1,6 +1,5 @@
-import React, {Component, useState} from 'react';
-import { createMuiTheme, withStyles, ThemeProvider  } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import { createMuiTheme  } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import { FormLabel, Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
@@ -10,10 +9,9 @@ import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { green, purple } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 import AddAlertIcon from '@material-ui/icons/AddAlert';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment'
 import Checkbox from '@material-ui/core/Checkbox';
@@ -111,6 +109,22 @@ class form extends Component {
                 id: item.id,
                 isReminderClicked: false});
         }
+      }
+
+      componentDidMount(){
+        this.clock = setInterval(
+          () => this.setCurrentTime(),
+          1000
+        )
+      }
+
+      setCurrentTime(){
+        const todayDateTime = moment().format("YYYY-MM-DD[T]HH:mm");
+        if(this.state.isReminderClicked)
+        this.setState({
+            todayDateTime: todayDateTime
+        });
+        console.log(this.state.todayDateTime);
       }
       
     // static getDerivedStateFromProps(props, current_state) {
@@ -228,7 +242,12 @@ class form extends Component {
                     itemsDelete = JSON.parse(window.localStorage.getItem("TripList"));
                     console.log("itemsDelete => ", itemsDelete);
                     const newListDelete = itemsDelete && itemsDelete.length > 0? itemsDelete.filter((item)=>{ if(item.id !== this.state.id) return item }):[];
-                    this.props.onTripDelete(this.state.id, newListDelete);
+                    const tripReminderList = newListDelete.filter((item) => {
+                        if(item.isReminderSet)
+                          return {id: item.id, dateTime : item.reminderTime }
+                      });
+                    
+                    this.props.onTripDelete(this.state.id, newListDelete, tripReminderList);
 
                     this.setState({
                         ...this.state.initialState
@@ -260,7 +279,11 @@ class form extends Component {
                     this.setState({
                         ...this.state.initialState
                     });
-                    this.props.onTripSave(newList);
+                    const tripListWithReminder = newList.filter((item) => {
+                        if(item.isReminderSet)
+                          return {id: item.id, dateTime : item.reminderTime }
+                      });
+                    this.props.onTripSave(newList, tripListWithReminder);
                     return;
                 default:
                     return;
@@ -277,8 +300,6 @@ class form extends Component {
                         <Grid item xs={4}>
                             <FormLabel >Title</FormLabel>
                         </Grid>
-                        {console.log(this.props.item)}
-                        {console.log(this.state.item)}
 
                         <Grid item xs={8}>
                             <TextField  id="title-text" 
@@ -335,7 +356,6 @@ class form extends Component {
                                         className={classes.formStyle}  
                                         variant="outlined" 
                                         type="date"
-                                        defaultValue={this.state.todayDate}
                                         value={this.state.startDate}
                                         InputProps={{inputProps: { min: this.state.todayDate} }}
                                         onChange={(event) => handleChange("startDate", event)}
@@ -434,8 +454,9 @@ class form extends Component {
                         <Grid item xs={3}>
                         <AlertDialog isOpen={this.state.isReminderClicked} 
                                         onClose={(event) => handleChange("openReminder", event)}
-                                        minDate={this.state.todayDateTime}
-                                        selectedDate={this.state.reminderTime}/>
+                                        minDate={this.state.reminderTime}
+                                        selectedDate={this.state.reminderTime}
+                                        isSnooze={false}/>
                         <Checkbox   name={"Check"}
                                     checked={this.state.isReminderSet}
                                     onChange={(event) => handleChange("setReminder", event)}></Checkbox>
@@ -504,9 +525,7 @@ class form extends Component {
     }
 }
 
-form.propTypes = {
-    classes: PropTypes.object.isRequired
-};
+
 
 const getItemDetails = (items,id) => {
     if(id>=0){
@@ -526,8 +545,8 @@ const mapStateToProps = (state) => ({
   })
   
   const mapDispatchToProps = (dispatch) => ({
-    onTripSave: (newList) => dispatch(SaveTrip(newList)),
-    onTripDelete: (id,newList) => dispatch(DeleteTrip(id, newList)),
+    onTripSave: (newList, reminderList) => dispatch(SaveTrip(newList,reminderList)),
+    onTripDelete: (id,newList, reminderList) => dispatch(DeleteTrip(id, newList, reminderList)),
     onTripSaveCancel: () => dispatch(SaveTripCancel())
   })
 
