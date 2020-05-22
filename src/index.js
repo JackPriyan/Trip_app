@@ -8,6 +8,10 @@ import { createStore, applyMiddleware } from 'redux'
 import rootReducer from './reducers'
 import {getAllTrips} from '../src/actions/action'
 import thunk from 'redux-thunk'
+
+/**
+ * We are using Redux Thunk in this project
+ */
 const middleware = [ thunk ];
 
 const store = createStore(rootReducer,applyMiddleware(...middleware))
