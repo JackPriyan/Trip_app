@@ -3,6 +3,20 @@
 <h2>The application will be a trip planner.  The overall application keeps track of individual trip records for which you can list, add, edit and delete.   It is a single page app with 3 panels as can be seen below.
 </h2>
 
+<h4>App Screen</h4>
+<img src="https://github.com/JackPriyan/Trip_app/blob/master/Screenshot_1.png?raw=true" width="100%">
+</p>
+
+
+<h4>Set Reminder Option</h4>
+
+<img src="https://github.com/JackPriyan/Trip_app/blob/master/Screenshot_2.png?raw=true" width="100%">
+</p>
+
+<h4>Triggered Reminder and Snooze option</h4>
+
+<img src="https://github.com/JackPriyan/Trip_app/blob/master/Screenshot_3.png?raw=true" width="100%">
+</p>
 
 ## Available Scripts
 
