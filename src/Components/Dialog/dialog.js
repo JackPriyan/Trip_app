@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,6 +12,11 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { DateTimePicker, KeyboardDateTimePicker,MuiPickersUtilsProvider } from "@material-ui/pickers";
+//import DateFnsUtils from '@date-io/date-fns'; // choose your lib
+import MomentUtils from "@date-io/moment";
+//import "moment/locale/nl";
+import moment from 'moment'
 
 export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false, snoozeItem }) {
   const [selectDateTime, setDateTime] = React.useState(minDate);
@@ -45,12 +50,18 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
     }
   };
   const handleChange = (name, event, itemIndex = 0) => {
-    const value  = event.target.value;
+      console.log("event handleChange ",event);
     switch (name){
         case "setReminder":
-            setDateTime (value);
+            const date  = event._d;
+            console.log("event SetReminder ",date);
+            const dateFormat = moment(date).format("YYYY-MM-DD[T]HH:mm");
+            console.log("event dateFormat ",dateFormat);
+
+            setDateTime (dateFormat);
             break;
         case "snooze":
+            const value  = event.target.value;
             setSnooze (value);
             break;
         default:
@@ -59,6 +70,7 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
     return;
   }
 
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   return (
     <div>
@@ -75,7 +87,7 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <div style={{margin:'10px', color:'red'}}>{ "Please Set Future Date & Time."}</div>
-          <TextField
+          {/* <TextField
                         id="datetime-local"
                         label="Set Reminder"
                         type="datetime-local"
@@ -85,9 +97,22 @@ export default function AlertDialog({isOpen, onClose, minDate, isSnooze = false,
                         InputLabelProps={{
                         shrink: true
                         }}
-                        InputProps={{inputProps: { min: minDate} }}
+                        InputProps={{inputProps: { min: minDate, pattern:"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" } }}
                         onChange={(event) => handleChange("setReminder", event)}
-                    />
+                        
+                    /> */}
+                        <MuiPickersUtilsProvider  utils={MomentUtils}>
+              <KeyboardDateTimePicker
+                                        variant="outlined"
+                                        ampm={false}
+                                        label="Set Reminder"
+                                        value={selectDateTime}
+                                        onChange={(event) => handleChange("setReminder", event)}
+                                        onError={console.log}
+                                        disablePast
+                                        format="DD/MM/YYYY - H:mm"
+                                    />
+                        </MuiPickersUtilsProvider>
           </DialogContentText>
         
         </DialogContent>

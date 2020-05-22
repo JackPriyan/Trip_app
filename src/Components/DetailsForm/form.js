@@ -59,6 +59,7 @@ class form extends Component {
         const date = new Date();
         const todayDate = moment(date).format("yyyy-MM-DD");
         const todayDateTime = moment().format("YYYY-MM-DD[T]HH:mm");
+        const todayReminderTime = new Date();
         const startDate = moment(date).format("yyyy-MM-DD");   
         const endDate = startDate;   
         const item = props.item;
